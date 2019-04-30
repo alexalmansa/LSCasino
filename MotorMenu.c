@@ -2,7 +2,8 @@
 
 
 static char state;
-static char fitxes, partguanyades, partjugades,fitguanyades,fitperdudes;
+static int fitxes;
+static char partguanyades, partjugades,fitguanyades,fitperdudes;
 static char opcio = 0;
 static char printat = 0;
 static char chars = 0;
@@ -87,7 +88,7 @@ void jugantLCD(void){
 
 char error(){ 
     if(op != '*' && op != '#') {
-        SiPutsCooperatiu("\n Caracter de operacio erroni \0");
+        SiPutsCooperatiu("\nCaracter de operacio erroni");
         return -1;
     }
     else{
@@ -96,6 +97,7 @@ char error(){
         }else{
             //SI ES PASSA DE 999 SHA DE QUEDAR A 999
         }
+        SiPutsCooperatiu("\nOperacio realitzada correctament");
         return 1;
     }    
 }
@@ -232,9 +234,9 @@ void MotorPropaganda(void) {
 			}
 			else if (error()!=-1 && chars==4) {
                 if(op == '*'){
-                    fitxes-=valors;                 // CAL PROVAR SI FUNCIONA
+                    //fitxes-=valors;                 // CAL PROVAR SI FUNCIONA
                 }else{
-                    fitxes+=valors;
+                    //fitxes+=valors;
                 }
 
 				opcio=0;
