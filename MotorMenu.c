@@ -10,6 +10,7 @@ static char chars = 0;
 static char timerPropaganda;
 static char valors[3]={'0','0','0'};
 static char caselles[3]={'0','0','0'};
+static int convertitCas,convertitVal ;
 
 static char temp[50],op;
 static int timestamp, timestamp2, total;
@@ -31,8 +32,19 @@ void myItoa(int num){
 
 }
 
+void myAtoi(char *str, char val) 
+{
+	if (val=='0') {
+		convertitCas= (str[0]-'0')*100+(str[1]-'0')*10+(str[2]-'0');
+	}else{
+		convertitVal= (str[0]-'0')*100+(str[1]-'0')*10+(str[2]-'0');
+	}
+	
+} 
+
+
 void Menu(void) {
-	SiPutsCooperatiu("\r\n\nMenu principal\r\n\0");
+	SiPutsCooperatiu("\r\n\n\nMenu principal\r\n\0");
 	SiPutsCooperatiu("\r\nTria una opcio:\r\n\0");
 	SiPutsCooperatiu("\r\n\0");
 	SiPutsCooperatiu("1. Nova aposta\r\n\0");
@@ -52,7 +64,7 @@ void apostaStringSIO(void) {
 }
 
 void jugantSIO(void) {
-	SiPutsCooperatiu("\r\nJUGANT\r\n\0");
+	SiPutsCooperatiu("\r\n\nIniciant ruleta...\r\n\0");
 }
 
 void fitxesStringSIO(void) {
@@ -64,7 +76,7 @@ void fitxesStringSIO(void) {
 void statsStringSIO(void) {
 	SiPutsCooperatiu("\r\n\n\nPanell d'estadistiques: \n");
     SiPutsCooperatiu("\r\nFitxes actuals: \0");
-	SiSendChar(fitxes+'0');
+	SiSendChar('M');
     SiPutsCooperatiu("\r\n\0");
 	SiPutsCooperatiu("Partides guanyades: \0");
 	SiSendChar(partguanyades+'0');
@@ -88,28 +100,32 @@ void jugantLCD(void){
 
 char error(){ 
     if(op != '*' && op != '#') {
-        SiPutsCooperatiu("\nCaracter de operacio erroni");
+        SiPutsCooperatiu("\nCaracter de operacio erroni\0");
         return -1;
     }
     else{
         if(op == '*'){
             // FALTA COMPROVAR SI TE PROUS FITXES PER RETIRAR
-        }else{
-            //SI ES PASSA DE 999 SHA DE QUEDAR A 999
+			if(convertitVal>fitxes ) {
+        		SiPutsCooperatiu("\nError! Retirant mes fitxes de les que disposes\0");
+        		return -1;
+			}
         }
-        SiPutsCooperatiu("\nOperacio realitzada correctament");
+        SiPutsCooperatiu("\nOperacio realitzada correctament\0");
         return 1;
     }    
 }
 
 char errorAposta(){ // CAL COMPRVAR SI HA APOSTAT MES FITXES DE LES QUE TE, O SI LA CASELLA ON HA APOSTAT ES POSSIBLE
-    if(0 == 0) {
-        SiPutsCooperatiu("ERROR \0");
+    if(convertitVal>fitxes ) {
+        SiPutsCooperatiu("\nError! Apostant mes fitxes de les que disposes\0");
         return -1;
-    }
-    else{
-        SiPutsCooperatiu("NO ERROR \0");
+    }else if(convertitCas == 100 || convertitCas == 200 || convertitCas < 37){
+		
         return 1;
+    }else{
+        SiPutsCooperatiu("\nError! Casella invalida \0");
+        return -1;
     }    
 }
 
@@ -182,6 +198,7 @@ void MotorPropaganda(void) {
 				//accionaRuleta(RANDOM());
 				jugantLCD();
 				jugantSIO();
+                timestamp=0;
 				//audioInici();
 				state = 10;
 			}else if(timestamp2 != timestamp){
@@ -228,20 +245,27 @@ void MotorPropaganda(void) {
 		case 6:
             if (chars < 4) {
 				state = 3;
-            }else if (error()==-1  &&  chars==4) {
-				opcio=0;
-				state = 0;
+            }else if (chars==4) {
+                SiPutsCooperatiu("\r\n\0");
+                myAtoi(valors,'1');
+				char err = error();
+				if (err==-1 ) {
+					opcio=0;
+					state = 0;
+				}else if (err!=-1) {
+					if(op == '*'){
+						fitxes-=convertitVal;                 // CAL PROVAR SI FUNCIONA
+					}else{
+						fitxes+=convertitVal;
+						if (fitxes>999) {
+							fitxes=999;
+						}
+					}
+					opcio=0;
+					state = 0;
+				}
 			}
-			else if (error()!=-1 && chars==4) {
-                if(op == '*'){
-                    //fitxes-=valors;                 // CAL PROVAR SI FUNCIONA
-                }else{
-                    //fitxes+=valors;
-                }
-
-				opcio=0;
-				state = 0;
-			}
+			
 			
 		break;
 		
@@ -273,6 +297,7 @@ void MotorPropaganda(void) {
 				jugantLCD();
 				jugantSIO();
 				//audioInici();
+                timestamp=0;
 				state = 10;
 			}
 		break;
@@ -282,7 +307,18 @@ void MotorPropaganda(void) {
 			if (timestamp >= 5) {				// T_ que ha de girar
 				//audioFinal();
 				//fitxes=apostaAcabadaSIO();
-				state = 2;
+                SiPutsCooperatiu("\r\nLa cela gunyadora es la ");
+                SiPutsCooperatiu("23");
+                SiPutsCooperatiu(", guanyen les ");
+                SiPutsCooperatiu("Negres\r\n\0");
+                
+                SiPutsCooperatiu("\r\nHo sentim");
+                SiPutsCooperatiu("23");
+                SiPutsCooperatiu(", guanyen les ");
+                SiPutsCooperatiu("Negres\r\n\0");
+
+				state = 0;
+                opcio=0;
 			}
 		break;
 		case 11:
@@ -290,6 +326,7 @@ void MotorPropaganda(void) {
 				state = 9;
 			}
 			else if (chars == 3) {								// podem fer que error(valor) sigui una funcio que retorni un boolea
+				
 				SiPutsCooperatiu("\r\nIntrodueix la cela [0-36 = Individual | 100 - Red | 200 - Black]:\r\n\0");
 				chars=0;
 				state = 12;
@@ -302,6 +339,7 @@ void MotorPropaganda(void) {
 				jugantLCD();
 				jugantSIO();
 				//audioInici();
+                timestamp=0;
 				state = 10;
 			}else if (SiCharAvail()) {                
                 caselles[chars]=SiGetChar();			
@@ -319,17 +357,29 @@ void MotorPropaganda(void) {
 			if (chars < 3) {
 				state = 12;
 			}
-			else if (errorAposta()==1 && chars == 3) {
-				SiPutsCooperatiu("\r\nS’han apostat 69 fitxes al vermell!! \r\n\0");
-				chars=0;
-				state = 16;
-			}
-			else if (errorAposta()==-1 && chars == 3) {
-				chars=0;
-				state = 9;
-                SiPutsCooperatiu("\r\nError al realitzar l'aposta!! \r\n\0");
-                SiPutsCooperatiu("\r\n\nIntrodueix numero de fitxes a apostar:\r\n\0");
+			else if (chars == 3) {
+                SiPutsCooperatiu("\r\n\0");
+                SiPutsCooperatiu("\r\n\0");
 
+				myAtoi(caselles,'0');
+				char error = errorAposta();
+				if (error==1) {
+                    
+					SiPutsCooperatiu("\r\nHas apostat ");
+                    SiSendChar(valors[0]);                                      // funciona malamnet, es printa abans de hora
+                    SiSendChar(valors[1]);
+                    SiSendChar(valors[2]);
+                    SiPutsCooperatiu(" fitxes al vermell!! \r\n\0");
+                    
+                    myAtoi(valors,'1');
+                    fitxes-=convertitVal;                           // restem les fitxes que hem apostat
+					chars=0;
+					state = 16;
+				}else if (error==-1) {
+					chars=0;
+					state = 9;
+					SiPutsCooperatiu("\r\n\nIntrodueix numero de fitxes a apostar:\r\n\0");
+				}
 			}
 		break;
 		case 16:
@@ -339,6 +389,7 @@ void MotorPropaganda(void) {
 				jugantSIO();
 				//audioInici();
 				state = 10;
+                timestamp=0;
 			}
 		break;
 		
