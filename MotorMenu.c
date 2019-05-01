@@ -429,58 +429,154 @@ void MotorPropaganda(void) {
 }
 
 #define     MAXCOLUMNES 16
-static char estatLCD = 0;
+static char estatLCD,lcdmenu = 0;
+static int getLenght[]={34,35,26,43,33};
 const unsigned char cadena[] = {"SDM 2013-14     "}; //Mes val que tingui 16 car�cters...
 static unsigned char timerLCD, caracterInici, i, j;
 static unsigned int mostra;
-static unsigned char segonaLinia[MAXCOLUMNES];
+static unsigned char menuLinia[34]={"Menu Principal - YYY fitxes - XX C"};
+static unsigned char esperaLinia[35]={"Esperant aposta - YYY fitxes - XX C"};
+static unsigned char jugantLinia[26]={"Jugant - YYY fitxes - XX C"};
+static unsigned char afegintLinia[43]={"Afegint/Retirant fitxes - YYY fitxes - XX C"};
+static unsigned char statsLinia[33]={"Estadistiques - YYY fitxes - XX C"};
+
+void netejaProgress(void){
+	LcGotoXY(0, 1);
+	LcPutString("                ");
+	LcGotoXY(0, 1);
+}
+
+void addProgress(void){
+	LcPutChar(0x10);																	// Caracter de casella plena
+}
+
+void setMenuLCD(void){
+	LcGotoXY(0, 1);
+
+}
+
+void setFitxes(char lcd){
+	myItoa(fitxes);
+	switch (lcd)
+	{
+		case 0:
+			menuLinia[18]=temp[0];
+			menuLinia[19]=temp[1];
+			menuLinia[20]=temp[2];
+			break;
+		case 1:
+			esperaLinia[19]=temp[0];
+			esperaLinia[20]=temp[1];
+			esperaLinia[21]=temp[2];
+			break;
+		case 2:
+			jugantLinia[10]=temp[0];
+			jugantLinia[11]=temp[1];
+			jugantLinia[12]=temp[2];
+			break;
+		case 3:
+			statsLinia[26]=temp[0];
+			statsLinia[27]=temp[1];
+			statsLinia[28]=temp[2];
+			break;	
+		case 4:
+			statsLinia[17]=temp[0];
+			statsLinia[18]=temp[1];
+			statsLinia[19]=temp[2];
+			break;		
+	}
+
+}
+
+void setTemp(char lcd){
+	//myItoa(fitxes);
+	switch (lcd)
+	{
+		case 0:
+			menuLinia[30]='2';
+			menuLinia[31]='2';
+			break;
+		case 1:
+			esperaLinia[32]='2';
+			esperaLinia[33]='2';
+			break;
+		case 2:
+			jugantLinia[22]='2';
+			jugantLinia[23]='2';
+			break;
+		case 3:
+			statsLinia[40]='2';
+			statsLinia[41]='2';
+			break;	
+		case 4:
+			statsLinia[30]='2';
+			statsLinia[31]='2';
+			break;		
+	}
+
+}
 
 
 void initMotorLCD(void) {
     //Pre: El LCD est� inicialitzat
     timerLCD = TiGetTimer();
+	lcdmenu=0;
     caracterInici = 0;
     LcClear();
-    //Hi ha caselles de la segona l�nia que sempre valdran el mateix, les preparo!
-    segonaLinia[0] = 'S';
-    segonaLinia[1] = 'W';
-    segonaLinia[2] = ':';
-    segonaLinia[5] = ' ';
-    segonaLinia[6] = 'P';
-    segonaLinia[7] = 'B';
-    segonaLinia[8] = ':';
-    segonaLinia[11] = ' ';
+    
 }
 
+void PosaChar(char lcd){
+	switch (estatLCD) {
+        case 0:							//Menu
+            LcPutChar(menuLinia[j++]);
+            if (j == 34) j = 0;
+            break;
+
+		case 1:							//Esperant
+            LcPutChar(esperaLinia[j++]);
+            if (j == 35) j = 0;
+            break;
+
+		case 2:							//Jugant
+            LcPutChar(jugantLinia[j++]);
+            if (j == 26) j = 0;
+            break;
+
+		case 3:							//Afegint retirant
+            LcPutChar(afegintLinia[j++]);
+            if (j == 43) j = 0;
+            break;
+
+		case 4:							//Stats
+            LcPutChar(statsLinia[j++]);
+            if (j == 33) j = 0;
+            break;			
+	}
+
+	if (i++ > MAXCOLUMNES) {
+		estatLCD = 1;
+		TiResetTics(timerLCD);
+		LcGotoXY(0, 1);
+    }		
+}
 
 void MotorLCD(void) {
     switch (estatLCD) {
-        case 0:
-            LcPutChar(cadena[j++]);
-            if (j == 16) j = 0;
-            if (i++ > MAXCOLUMNES) {
-                estatLCD = 1;
-                TiResetTics(timerLCD);
-                LcGotoXY(0, 1);
-            }
+        case 0:							//Menu
+			PosaChar(lcdmenu);
             break;
 
         case 1: //Preparo el string
-            segonaLinia[3] = getSwitch1() + '0';
-            segonaLinia[4] = getSwitch2() + '0';
-            segonaLinia[9] = getPB1() + '0';
-            segonaLinia[10] = getPB2() + '0';
+            setFitxes(lcdmenu);
             estatLCD = 2;
             break;
-        case 2: //Aqu� faig l'itoa, que deu trigar una bona estona el pobre...
-            mostra = AdGetMostra();
-            myItoa(mostra);
-            segonaLinia[12] = temp[0];
-            segonaLinia[13] = temp[1];
-            segonaLinia[14] = temp[2];
-            segonaLinia[15] = temp[3];
+
+        case 2: //Aqui faig l'itoa, que deu trigar una bona estona el pobre...
+            setTemp(lcdmenu);
             estatLCD = 3;
             break;
+
         case 3:
             if (TiGetTics(timerLCD) > 50) {
                 //Observo que si estresso molt al LCD arriba un punt que alguna
@@ -492,19 +588,12 @@ void MotorLCD(void) {
                 estatLCD = 4;
             }
             break;
-        case 4:
-            LcPutChar(segonaLinia[i++]);
-            if (i > MAXCOLUMNES) {
-                estatLCD = 5;
-                TiResetTics(timerLCD);
-            }
-            break;
 
-        case 5:
+        case 4:
             if (TiGetTics(timerLCD) >= 250) {
                 //Alerta, ja porto 50 ms. des de l'�ltim refresc
                 caracterInici++;
-                if (caracterInici == 16)
+                if (caracterInici == getLenght[lcdmenu])
                     caracterInici = 0;
                 estatLCD = 0;
                 LcGotoXY(0, 0);
