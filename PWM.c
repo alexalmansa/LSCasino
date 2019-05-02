@@ -3,21 +3,21 @@
 //
 
 #include "PWM.h"
+#include "time.h"
 //#define TEMPSA1 20;
 static char estatPWM;
 static char timerPWM, temps;
-static char countPWM;
-static int TEMPSA1, GRAUSXFLANC = 1;
-#define PWM LATAbits.LATA4
+static char countPWM, start;
+static int TEMPSA1, GRAUSXFLANC = 27;
 
-void PWMInit(){
-    void PwInit(){
+
+    void PWMInit(void){
         timerPWM = TiGetTimer();
-        estatPWM = 0;
+      estatPWM = 0;
         PWM = '0';
         //TRISBbits.TRISB10 = 0;
 }
-    void changePWM() {
+    void changePWM(void) {
 
         //Post: Posa a 1 o 0 el PWM , depenent del temps que estigui
 
@@ -26,21 +26,20 @@ void PWMInit(){
 
     }
 
-    void grausToFlancs(int graus) {
+    
 
-
-
-
-    }
-
-    void incrementPWM() {
+    void incrementPWM(void) {
 
         //Post: Incrementa el valor de countPWM
         countPWM = countPWM + 1;
 
     }
 
-    void MotorPWM (char start) {
+    void setGraus(int graus) {
+      start = graus * GRAUSXFLANC;
+    }
+
+    void MotorPWM (void) {
         switch(estatPWM) {
             case 0:
 
@@ -55,6 +54,7 @@ void PWMInit(){
             case 1:
                 if(countPWM >= start){
                     estatPWM = 0;
+                    //countPWM = 0;
                 }else{
                     temps = TiGetTics(timerPWM) ;
                     changePWM();
@@ -73,4 +73,4 @@ void PWMInit(){
                     break;
         }
     }
-}
+
