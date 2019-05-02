@@ -1,15 +1,14 @@
 #include "PrTPropaganda.h"
 
 
-static char state, opcio, printat, chars, guanyem, timerPropaganda,lcdmenu,conta = 0;
+static char state, opcio, printat, chars, guanyem, timerPropaganda, lcdmenu, conta = 0;
 static char temp[5], op, fitxestemp[3], celatemp[3];
 static char casella[3];
 static char valors[3] = {'0', '0', '0'};
+static char estadistiques0[3], estadistiques1[3], estadistiques2[3], estadistiques3[3];
 static int estadistiques[4];
-static char estadistiques0[3],estadistiques1[3],estadistiques2[3],estadistiques3[3];
-
 static int fitxes;
-static int convertitCas, convertitVal, convertitGuany, casellaGuany, timestamp, timestamp2, total,fitxesguanyades;
+static int convertitCas, convertitVal, casellaGuany, timestamp, timestamp2, total, fitxesguanyades;
 
 
 void myItoa(int num) {
@@ -35,6 +34,9 @@ void myAtoi(char *str, char val) {
     }
 }
 
+void randomNumber(void){
+    casellaGuany = rand() % 37;
+}
 
 void Menu(void) {
     SiPutsCooperatiu("\r\n\n\nMenu principal\r\n\0");
@@ -56,11 +58,7 @@ void apostaStringSIO(void) {
     SiPutsCooperatiu("\r\nPrem '#' per apostar fitxes\r\n\0");
     SiPutsCooperatiu("\r\n\0");
     SiPutsCooperatiu("Fitxes disponibles: ");
-    //myItoa(fitxes);
     SiPutsCooperatiu(fitxestemp);
-    //SiSendChar(valors[0]);   Podria passar fitxes a ser un CHAR
-    //SiSendChar(valors[1]);
-    //SiSendChar(valors[2]);
     SiPutsCooperatiu("\r\n\0");
 }
 
@@ -71,44 +69,44 @@ void fitxesStringSIO(void) {
 }
 
 void statsStringSIO(void) {
-    //char estadistiques0[3],estadistiques1[3],estadistiques2[3],estadistiques3[3];
+
     SiPuts("\r\n\n\nPanell d'estadistiques: \n");
     SiPuts("\r\nFitxes actuals: \0");
     SiPuts(fitxestemp);
-    
+
     myItoa(estadistiques[0]);
-    cstringcpy(temp,estadistiques0);
-    
+    cstringcpy(temp, estadistiques0);
+
     SiPuts("\r\n\0");
     SiPuts("Partides guanyades: \0");
     SiPuts(estadistiques0);
-    
-    
+
+
     myItoa(estadistiques[1]);
-    cstringcpy(temp,estadistiques1);
-    
+    cstringcpy(temp, estadistiques1);
+
     SiPuts("\r\n\0");
     SiPuts("Partides jugades: \0");
     SiPuts(estadistiques1);
-    
+
     myItoa(estadistiques[2]);
-    cstringcpy(temp,estadistiques2);
-    
+    cstringcpy(temp, estadistiques2);
+
     SiPuts("\r\n\0");
     SiPuts("Fitxes guanyades en total: \0");
     SiPuts(estadistiques2);
-    
+
     myItoa(estadistiques[3]);
-    cstringcpy(temp,estadistiques3);
-    
+    cstringcpy(temp, estadistiques3);
+
     SiPuts("\r\n\0");
     SiPuts("Fitxes perdudes en total: \0");
     SiPuts(estadistiques3);
-    
+
     SiPuts("\r\n\0");
     SiPuts("\n\0");
-    
-    
+
+
 }
 
 void jugantSIO(void) {
@@ -159,17 +157,16 @@ void initPropaganda(void) {
 
     printat = 1;
     total = 0;
-    estadistiques[0]=0;
-    
-    estadistiques[1]=0;
-    
-    estadistiques[2]=0;
-    
-    estadistiques[3]=0;
-    
-    
+
+    estadistiques[0] = 0;
+    estadistiques[1] = 0;
+    estadistiques[2] = 0;
+    estadistiques[3] = 0;
+
+
     // Inicializacio variable test
-    casellaGuany = 21;
+    //casellaGuany = 21;
+    randomNumber();
     fitxes = 100;
 
 }
@@ -185,9 +182,9 @@ void MotorPropaganda(void) {
     switch (state) {
         case 0:
             chars = 0;
-            
+
             if (opcio == 0 && !SiCharAvail() && printat == 0) {
-                lcdmenu=0;
+                lcdmenu = 0;
                 Menu();
                 netejaProgress();
                 printat = 1;
@@ -196,20 +193,21 @@ void MotorPropaganda(void) {
                 opcio = SiGetChar();
                 SiSendChar(opcio);
             } else if (opcio == '1') {
+                randomNumber();
                 timestamp = 0;
-                lcdmenu=1;
+                lcdmenu = 1;
                 apostaStringSIO();
                 state = 2;
                 printat = 0;
-                convertitGuany = 0;
                 
+
             } else if (opcio == '2') {
-                lcdmenu=3;
+                lcdmenu = 3;
                 fitxesStringSIO();
                 state = 3;
                 printat = 0;
             } else if (opcio == '3') {
-                lcdmenu=4;
+                lcdmenu = 4;
                 statsStringSIO();
                 state = 5;
                 printat = 0;
@@ -224,7 +222,7 @@ void MotorPropaganda(void) {
                 //accionaRuleta(RANDOM());
                 addProgress();
                 jugantSIO();
-                lcdmenu=2;
+                lcdmenu = 2;
                 timestamp = 0;
                 //audioInici();
                 state = 10;
@@ -307,13 +305,13 @@ void MotorPropaganda(void) {
         case 9:                                                                                                         // Nova Aposta
             if (SiCharAvail()) {
                 valors[chars] = SiGetChar();
-                SiSendChar(valors[chars]);                                                                              
+                SiSendChar(valors[chars]);
                 chars++;
                 state = 11;
             } else if (timestamp >= 16) {
                 //accionaRuleta(RANDOM());
                 jugantSIO();
-                lcdmenu=2;
+                lcdmenu = 2;
                 //audioInici();
                 timestamp = 0;
                 state = 10;
@@ -323,66 +321,66 @@ void MotorPropaganda(void) {
         case 10:                                                                                                        // Accions ruleta
             chars = 0;
             //audioDurantGira();
-            if (timestamp >= 5) {                // T_ que ha de girar
+            if (timestamp >= 5) {                                                                                       // T_ que ha de girar
                 //audioFinal();
                 //fitxes=apostaAcabadaSIO();
 
-                myItoa(casellaGuany);                                                                                   // ERROR----------------------------------
-                
+                myItoa(casellaGuany);
+
                 SiPuts("\r\nLa cela gunyadora es la ");
-                SiPuts(temp);                                                                                 // ERROR----------------------------------
+                SiPuts(temp);
                 SiPuts(", guanyen les ");
-                
+
                 int resultat = casellaGuany % 2;
-                
+
                 if (resultat == 0) {
                     SiPuts("Negres\r\n\0");
                 } else {
                     SiPuts("Vermelles\r\n\0");
                 }
-                
-                guanyem=0;
-                if(casellaGuany==convertitCas){
-                    fitxesguanyades=convertitVal*37;
-                    guanyem=1;
-                }else if((resultat == 0 && convertitCas == 200) || (resultat == 1 && convertitCas == 100)){
-                    fitxesguanyades=convertitVal*2;
-                    guanyem=1;
+
+                guanyem = 0;
+                if (casellaGuany == convertitCas) {
+                    fitxesguanyades = convertitVal * 37;
+                    guanyem = 1;
+                } else if ((resultat == 0 && convertitCas == 200) || (resultat == 1 && convertitCas == 100)) {
+                    fitxesguanyades = convertitVal * 2;
+                    guanyem = 1;
                 }
-                state=7;
-            }else{
-                myItoa(casellaGuany);                 
-                cstringcpy(temp,celatemp);
+                state = 7;
+            } else {
+                myItoa(casellaGuany);
+                cstringcpy(temp, celatemp);
             }
 
             break;
-            
+
         case 7:
-            myItoa(convertitVal);                                                                                       // ERROR----------------------------------
-                
-                if(guanyem==1){            
-                    
-                    estadistiques[0]++;
-                    
-                    estadistiques[2]+=fitxesguanyades;
-                    
-                    fitxes+=fitxesguanyades;
-                    if(fitxes > 999) fitxes=999;
-                    SiPutsCooperatiu("\r\nFelicitats! Has guanyat ");
-                    SiPutsCooperatiu(temp);                                                                             // ERROR----------------------------------
-                    SiPutsCooperatiu(" fitxes!\r\n\0");
-                }else{
-                    SiPutsCooperatiu("\r\nHo sentim, has perdut ");
-                    SiPutsCooperatiu(temp);                                                                             // ERROR----------------------------------
-                    SiPutsCooperatiu(" fitxes!\r\n\0");
-                    estadistiques[3]+=convertitVal;                                                                     // Sumem a stats les fitxes perdudes
-                    
-                }
-                estadistiques[1]++;
-                
-                
-                state = 0;
-                opcio = 0;
+            myItoa(convertitVal);
+
+            if (guanyem == 1) {
+
+                estadistiques[0]++;
+                estadistiques[2] += fitxesguanyades-convertitVal;
+
+                fitxes += fitxesguanyades;
+
+                if (fitxes > 999) fitxes = 999;
+                SiPutsCooperatiu("\r\nFelicitats! Has guanyat ");
+                SiPutsCooperatiu(temp);
+                SiPutsCooperatiu(" fitxes!\r\n\0");
+            } else {
+                SiPutsCooperatiu("\r\nHo sentim, has perdut ");
+                SiPutsCooperatiu(temp);
+                SiPutsCooperatiu(" fitxes!\r\n\0");
+                estadistiques[3] += convertitVal;                                                                       // Sumem a stats les fitxes perdudes
+
+            }
+            estadistiques[1]++;
+
+
+            state = 0;
+            opcio = 0;
             break;
 
         case 11:                                                                                                        // Nova Aposta
@@ -398,10 +396,11 @@ void MotorPropaganda(void) {
             break;
 
         case 12:                                                                                                        // Nova Aposta
-            if (timestamp >= 16) {                                                                                      // Comenca la ruleta
+            if (timestamp >=
+                16) {                                                                                                   // Comenca la ruleta
                 //accionaRuleta(RANDOM());
                 jugantSIO();
-                lcdmenu=2;
+                lcdmenu = 2;
                 //audioInici();
                 timestamp = 0;
                 state = 10;
@@ -420,28 +419,27 @@ void MotorPropaganda(void) {
             } else if (chars == 3) {
                 SiPuts("\r\n\0");
                 SiPuts("\r\n\0");
-                
+
                 myAtoi(casella, '0');
                 char error = errorAposta();
                 if (error == 1) {
-                    //myItoa(valors);
                     SiPuts("\r\nHas apostat ");
                     SiPuts(valors);
-                    
-                    int resultat = convertitCas % 2;
-                    if(convertitCas < 37){
+
+                    //int resultat = convertitCas % 2;
+                    if (convertitCas < 37) {
                         SiPuts(" fitxes a la casella ");
-                        SiSendChar(casella[0]);                                                                     // ERROR----------------------------------
-                        SiSendChar(casella[1]);         
-                        SiSendChar(casella[2]);         
-                        SiPuts("!! \r\n\0"); 
-                        
-                    }else if(resultat==0){
+                        SiSendChar(casella[0]);
+                        SiSendChar(casella[1]);
+                        SiSendChar(casella[2]);
+                        SiPuts("!! \r\n\0");
+
+                    } else if (convertitCas == 200) {
                         SiPuts(" fitxes al negre!! \r\n\0");
-                    }else if(resultat==1){
+                    } else if (convertitCas == 100) {
                         SiPuts(" fitxes al vermell!! \r\n\0");
                     }
-                    
+
                     myAtoi(valors, '1');
                     fitxes -= convertitVal;                                                                             // Restem les fitxes que hem apostat
                     chars = 0;
@@ -458,19 +456,19 @@ void MotorPropaganda(void) {
             if (timestamp >= 16) {
                 //accionaRuleta(RANDOM());
                 jugantSIO();
-                lcdmenu=2;
+                lcdmenu = 2;
                 //audioInici();
                 state = 10;
                 timestamp = 0;
-            }else if (timestamp2 != timestamp) {
+            } else if (timestamp2 != timestamp) {
                 timestamp2 = timestamp;
                 myItoa(timestamp);
                 SiSendChar('\r');
                 SiPutsCooperatiu("[Temps restant ");
                 SiPutsCooperatiu(temp);
                 SiPutsCooperatiu(" segons]");
-                
-                while(timestamp != conta){
+
+                while (timestamp != conta) {
                     addProgress();
                 }
             }
@@ -481,94 +479,90 @@ void MotorPropaganda(void) {
 
 #define     MAXCOLUMNES 16
 static char estatLCD = 0;
-static int getLenght[]={36,37,28,45,35};
+static int getLenght[] = {36, 37, 28, 45, 35};
 static unsigned char timerLCD, caracterInici, i, j;
-static unsigned int mostra;
-static unsigned char menuLinia[36]={"Menu Principal - YYY fitxes - XX C  "};
-static unsigned char esperaLinia[37]={"Esperant aposta - YYY fitxes - XX C  "};
-static unsigned char jugantLinia[28]={"Jugant - YYY fitxes - XX C  "};
-static unsigned char afegintLinia[45]={"Afegint/Retirant fitxes - YYY fitxes - XX C  "};
-static unsigned char statsLinia[35]={"Estadistiques - YYY fitxes - XX C  "};
+static unsigned char menuLinia[36] = {"Menu Principal - YYY fitxes - XX C  "};
+static unsigned char esperaLinia[37] = {"Esperant aposta - YYY fitxes - XX C  "};
+static unsigned char jugantLinia[28] = {"Jugant - YYY fitxes - XX C  "};
+static unsigned char afegintLinia[45] = {"Afegint/Retirant fitxes - YYY fitxes - XX C  "};
+static unsigned char statsLinia[35] = {"Estadistiques - YYY fitxes - XX C  "};
 
-void netejaProgress(void){
-	LcGotoXY(0, 1);
-	LcPutString("                ");
-	LcGotoXY(0, 1);
-    conta=0;
+void netejaProgress(void) {
+    LcGotoXY(0, 1);
+    LcPutString("                ");
+    LcGotoXY(0, 1);
+    conta = 0;
 }
 
-void addProgress(void){
+void addProgress(void) {
     LcGotoXY(conta, 1);
-	LcPutChar('X');																	// Caracter de casella plena
+    LcPutChar('X');                                                                    // Caracter de casella plena
     conta++;
 }
 
 
-void setFitxes(char lcd){
-	myItoa(fitxes);
-    cstringcpy(temp,fitxestemp);
-    
-	switch (lcd)
-	{
-		case 0:
-			menuLinia[17]=temp[1];
-			menuLinia[18]=temp[2];
-			menuLinia[19]=temp[3];
-			break;
-		case 1:
-			esperaLinia[18]=temp[1];
-			esperaLinia[19]=temp[2];
-			esperaLinia[20]=temp[3];
-			break;
-		case 2:
-			jugantLinia[9]=temp[1];
-			jugantLinia[10]=temp[2];
-			jugantLinia[11]=temp[3];
-			break;
-		case 3:
-			afegintLinia[26]=temp[1];
-			afegintLinia[27]=temp[2];
-			afegintLinia[28]=temp[3];
-			break;	
-		case 4:
-			statsLinia[16]=temp[1];
-			statsLinia[17]=temp[2];
-			statsLinia[18]=temp[3];
-			break;		
-	}
+void setFitxes(char lcd) {
+    myItoa(fitxes);
+    cstringcpy(temp, fitxestemp);
+
+    switch (lcd) {
+        case 0:
+            menuLinia[17] = temp[1];
+            menuLinia[18] = temp[2];
+            menuLinia[19] = temp[3];
+            break;
+        case 1:
+            esperaLinia[18] = temp[1];
+            esperaLinia[19] = temp[2];
+            esperaLinia[20] = temp[3];
+            break;
+        case 2:
+            jugantLinia[9] = temp[1];
+            jugantLinia[10] = temp[2];
+            jugantLinia[11] = temp[3];
+            break;
+        case 3:
+            afegintLinia[26] = temp[1];
+            afegintLinia[27] = temp[2];
+            afegintLinia[28] = temp[3];
+            break;
+        case 4:
+            statsLinia[16] = temp[1];
+            statsLinia[17] = temp[2];
+            statsLinia[18] = temp[3];
+            break;
+    }
 
 }
 
-void setTemp(char lcd){
-	//myItoa(fitxes);
-	switch (lcd)
-	{
-		case 0:
-			menuLinia[30]='2';
-			menuLinia[31]='2';
-			break;
-		case 1:
-			esperaLinia[31]='2';
-			esperaLinia[32]='2';
-			break;
-		case 2:
-			jugantLinia[22]='2';
-			jugantLinia[23]='2';
-			break;
-		case 3:
-			afegintLinia[39]='2';
-			afegintLinia[40]='2';
-			break;	
-		case 4:
-			statsLinia[29]='2';
-			statsLinia[30]='2';
-			break;		
-	}
+void setTemp(char lcd) {
+    //myItoa(temperatura);
+    switch (lcd) {
+        case 0:
+            menuLinia[30] = '2';
+            menuLinia[31] = '2';
+            break;
+        case 1:
+            esperaLinia[31] = '2';
+            esperaLinia[32] = '2';
+            break;
+        case 2:
+            jugantLinia[22] = '2';
+            jugantLinia[23] = '2';
+            break;
+        case 3:
+            afegintLinia[39] = '2';
+            afegintLinia[40] = '2';
+            break;
+        case 4:
+            statsLinia[29] = '2';
+            statsLinia[30] = '2';
+            break;
+    }
 
 }
 
-void cstringcpy(char *src, char * dest)
-{
+void cstringcpy(char *src, char *dest) {
     while (*src) {
         *(dest++) = *(src++);
     }
@@ -576,52 +570,52 @@ void cstringcpy(char *src, char * dest)
 }
 
 void initMotorLCD(void) {
-    //Pre: El LCD est� inicialitzat
+    //Pre: El LCD esta inicialitzat
     timerLCD = TiGetTimer();
     caracterInici = 0;
     LcClear();
-    
+
 }
 
-void PosaChar(char lcd){
-	switch (lcd) {
-        case 0:							//Menu
+void PosaChar(char lcd) {
+    switch (lcd) {
+        case 0:                            //Menu
             LcPutChar(menuLinia[j++]);
             if (j == 36) j = 0;
             break;
 
-		case 1:							//Esperant
+        case 1:                            //Esperant
             LcPutChar(esperaLinia[j++]);
             if (j == 37) j = 0;
             break;
 
-		case 2:							//Jugant
+        case 2:                            //Jugant
             LcPutChar(jugantLinia[j++]);
             if (j == 28) j = 0;
             break;
 
-		case 3:							//Afegint retirant
+        case 3:                            //Afegint retirant
             LcPutChar(afegintLinia[j++]);
             if (j == 45) j = 0;
             break;
 
-		case 4:							//Stats
+        case 4:                            //Stats
             LcPutChar(statsLinia[j++]);
             if (j == 35) j = 0;
-            break;			
-	}
+            break;
+    }
 
-	if (i++ > MAXCOLUMNES) {
-		estatLCD = 1;
-		TiResetTics(timerLCD);
-		LcGotoXY(0, 0);
-    }		
+    if (i++ > MAXCOLUMNES) {
+        estatLCD = 1;
+        TiResetTics(timerLCD);
+        LcGotoXY(0, 0);
+    }
 }
 
 void MotorLCD(void) {
     switch (estatLCD) {
-        case 0:							//Menu
-			PosaChar(lcdmenu);
+        case 0:                            //Menu
+            PosaChar(lcdmenu);
             break;
 
         case 1: //Preparo el string
@@ -636,10 +630,6 @@ void MotorLCD(void) {
 
         case 3:
             if (TiGetTics(timerLCD) > 50) {
-                //Observo que si estresso molt al LCD arriba un punt que alguna
-                //vegada pinta malament un car�cter. Deu tenir una cua interna?
-                //si la t�, aposto a que �s de 24 posicions (mal n�mero)...
-                //Cap problema, donem 50 ms. de calma entre r�fega i r�fega i gas
                 TiResetTics(timerLCD);
                 i = 0;
                 estatLCD = 4;
