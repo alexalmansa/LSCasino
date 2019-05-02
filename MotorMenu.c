@@ -2,10 +2,11 @@
 
 
 static char state, opcio, printat, chars, guanyem, timerPropaganda,lcdmenu,conta = 0;
-static char temp[50], op, fitxestemp[3], celatemp[3];
+static char temp[5], op, fitxestemp[3], celatemp[3];
+static char casella[3];
 static char valors[3] = {'0', '0', '0'};
-static char caselles[3] = {'0', '0', '0'};
-static char estadistiques[4] = {'0', '0', '0', '0'};
+static int estadistiques[4];
+static char estadistiques0[3],estadistiques1[3],estadistiques2[3],estadistiques3[3];
 
 static int fitxes;
 static int convertitCas, convertitVal, convertitGuany, casellaGuany, timestamp, timestamp2, total,fitxesguanyades;
@@ -70,23 +71,44 @@ void fitxesStringSIO(void) {
 }
 
 void statsStringSIO(void) {
-    SiPutsCooperatiu("\r\n\n\nPanell d'estadistiques: \n");
-    SiPutsCooperatiu("\r\nFitxes actuals: \0");
-    SiPutsCooperatiu(fitxestemp);
-    SiPutsCooperatiu("\r\n\0");
-    SiPutsCooperatiu("Partides guanyades: \0");
-    SiSendChar(estadistiques[0]);
-    SiPutsCooperatiu("\r\n\0");
-    SiPutsCooperatiu("Partides jugades: \0");
-    SiSendChar(estadistiques[1]);
-    SiPutsCooperatiu("\r\n\0");
-    SiPutsCooperatiu("Fitxes guanyades en total: \0");
-    SiSendChar(estadistiques[2]);
-    SiPutsCooperatiu("\r\n\0");
-    SiPutsCooperatiu("Fitxes perdudes en total: \0");
-    SiSendChar(estadistiques[3]);
-    SiPutsCooperatiu("\r\n\0");
-    SiPutsCooperatiu("\n\0");
+    //char estadistiques0[3],estadistiques1[3],estadistiques2[3],estadistiques3[3];
+    SiPuts("\r\n\n\nPanell d'estadistiques: \n");
+    SiPuts("\r\nFitxes actuals: \0");
+    SiPuts(fitxestemp);
+    
+    myItoa(estadistiques[0]);
+    cstringcpy(temp,estadistiques0);
+    
+    SiPuts("\r\n\0");
+    SiPuts("Partides guanyades: \0");
+    SiPuts(estadistiques0);
+    
+    
+    myItoa(estadistiques[1]);
+    cstringcpy(temp,estadistiques1);
+    
+    SiPuts("\r\n\0");
+    SiPuts("Partides jugades: \0");
+    SiPuts(estadistiques1);
+    
+    myItoa(estadistiques[2]);
+    cstringcpy(temp,estadistiques2);
+    
+    SiPuts("\r\n\0");
+    SiPuts("Fitxes guanyades en total: \0");
+    SiPuts(estadistiques2);
+    
+    myItoa(estadistiques[3]);
+    cstringcpy(temp,estadistiques3);
+    
+    SiPuts("\r\n\0");
+    SiPuts("Fitxes perdudes en total: \0");
+    SiPuts(estadistiques3);
+    
+    SiPuts("\r\n\0");
+    SiPuts("\n\0");
+    
+    
 }
 
 void jugantSIO(void) {
@@ -137,7 +159,15 @@ void initPropaganda(void) {
 
     printat = 1;
     total = 0;
-
+    estadistiques[0]=0;
+    
+    estadistiques[1]=0;
+    
+    estadistiques[2]=0;
+    
+    estadistiques[3]=0;
+    
+    
     // Inicializacio variable test
     casellaGuany = 21;
     fitxes = 100;
@@ -298,16 +328,17 @@ void MotorPropaganda(void) {
                 //fitxes=apostaAcabadaSIO();
 
                 myItoa(casellaGuany);                                                                                   // ERROR----------------------------------
-                SiPutsCooperatiu("\r\nLa cela gunyadora es la ");
-                SiPutsCooperatiu(celatemp);                                                                                 // ERROR----------------------------------
-                SiPutsCooperatiu(", guanyen les ");
+                
+                SiPuts("\r\nLa cela gunyadora es la ");
+                SiPuts(temp);                                                                                 // ERROR----------------------------------
+                SiPuts(", guanyen les ");
                 
                 int resultat = casellaGuany % 2;
                 
                 if (resultat == 0) {
-                    SiPutsCooperatiu("Negres\r\n\0");
+                    SiPuts("Negres\r\n\0");
                 } else {
-                    SiPutsCooperatiu("Vermelles\r\n\0");
+                    SiPuts("Vermelles\r\n\0");
                 }
                 
                 guanyem=0;
@@ -332,7 +363,9 @@ void MotorPropaganda(void) {
                 if(guanyem==1){            
                     
                     estadistiques[0]++;
+                    
                     estadistiques[2]+=fitxesguanyades;
+                    
                     fitxes+=fitxesguanyades;
                     if(fitxes > 999) fitxes=999;
                     SiPutsCooperatiu("\r\nFelicitats! Has guanyat ");
@@ -343,8 +376,10 @@ void MotorPropaganda(void) {
                     SiPutsCooperatiu(temp);                                                                             // ERROR----------------------------------
                     SiPutsCooperatiu(" fitxes!\r\n\0");
                     estadistiques[3]+=convertitVal;                                                                     // Sumem a stats les fitxes perdudes
+                    
                 }
                 estadistiques[1]++;
+                
                 
                 state = 0;
                 opcio = 0;
@@ -352,6 +387,7 @@ void MotorPropaganda(void) {
 
         case 11:                                                                                                        // Nova Aposta
             if (chars < 3) {
+                myAtoi(valors, '1');
                 state = 9;
             } else if (chars == 3) {
                 SiPutsCooperatiu("\r\nIntrodueix la cela [0-36 = Individual | 100 - Red | 200 - Black]:\r\n\0");
@@ -370,8 +406,8 @@ void MotorPropaganda(void) {
                 timestamp = 0;
                 state = 10;
             } else if (SiCharAvail()) {
-                caselles[chars] = SiGetChar();
-                SiSendChar(caselles[chars]);
+                casella[chars] = SiGetChar();
+                SiSendChar(casella[chars]);
                 chars++;
 
                 state = 14;
@@ -382,28 +418,28 @@ void MotorPropaganda(void) {
             if (chars < 3) {
                 state = 12;
             } else if (chars == 3) {
-                SiPutsCooperatiu("\r\n\0");
-                SiPutsCooperatiu("\r\n\0");
-
-                myAtoi(caselles, '0');
+                SiPuts("\r\n\0");
+                SiPuts("\r\n\0");
+                
+                myAtoi(casella, '0');
                 char error = errorAposta();
                 if (error == 1) {
                     //myItoa(valors);
-                    SiPutsCooperatiu("\r\nHas apostat ");
-                    //SiPutsCooperatiu(temp);
-                    SiSendChar(valors[0]);                                                                              // ERROR----------------------------------
-                    SiSendChar(valors[1]);
-                    SiSendChar(valors[2]);
+                    SiPuts("\r\nHas apostat ");
+                    SiPuts(valors);
                     
-                    int resultat = casellaGuany % 2;
+                    int resultat = convertitCas % 2;
                     if(convertitCas < 37){
-                        SiPutsCooperatiu(" fitxes a la casella ");
-                        SiPutsCooperatiu(caselles);                                                                     // ERROR----------------------------------
-                        SiPutsCooperatiu("!! \r\n\0");    
+                        SiPuts(" fitxes a la casella ");
+                        SiSendChar(casella[0]);                                                                     // ERROR----------------------------------
+                        SiSendChar(casella[1]);         
+                        SiSendChar(casella[2]);         
+                        SiPuts("!! \r\n\0"); 
+                        
                     }else if(resultat==0){
-                        SiPutsCooperatiu(" fitxes al negre!! \r\n\0");
+                        SiPuts(" fitxes al negre!! \r\n\0");
                     }else if(resultat==1){
-                        SiPutsCooperatiu(" fitxes al vermell!! \r\n\0");
+                        SiPuts(" fitxes al vermell!! \r\n\0");
                     }
                     
                     myAtoi(valors, '1');
