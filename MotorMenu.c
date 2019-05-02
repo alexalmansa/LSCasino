@@ -1,7 +1,7 @@
 #include "PrTPropaganda.h"
 
 
-static char state, opcio, printat, chars, guanyem, timerPropaganda = 0;
+static char state, opcio, printat, chars, guanyem, timerPropaganda,lcdmenu = 0;
 static char temp[50], op;
 static char valors[3] = {'0', '0', '0'};
 static char caselles[3] = {'0', '0', '0'};
@@ -160,7 +160,7 @@ void MotorPropaganda(void) {
             chars = 0;
 
             if (opcio == 0 && !SiCharAvail() && printat == 0) {
-                LcPutString("Menu principal - 200 fitxes - 69C");
+                lcdmenu=0;
                 Menu();
                 printat = 1;
 
@@ -169,18 +169,18 @@ void MotorPropaganda(void) {
                 SiSendChar(opcio);
             } else if (opcio == '1') {
                 timestamp = 0;
-                LcPutString("Esperant aposta - 200 fitxes - 69C");
+                lcdmenu=1;
                 apostaStringSIO();
                 state = 2;
                 printat = 0;
                 convertitGuany = 0;
             } else if (opcio == '2') {
-                LcPutString("Afegint/retirant fitxes - 200 fitxes - 69C");
+                lcdmenu=3;
                 fitxesStringSIO();
                 state = 3;
                 printat = 0;
             } else if (opcio == '3') {
-                LcPutString("Mostrant estadistiques - 200 fitxes - 69C");
+                lcdmenu=4;
                 statsStringSIO();
                 state = 5;
                 printat = 0;
@@ -195,6 +195,7 @@ void MotorPropaganda(void) {
                 //accionaRuleta(RANDOM());
                 jugantLCD();
                 jugantSIO();
+                lcdmenu=2;
                 timestamp = 0;
                 //audioInici();
                 state = 10;
@@ -283,6 +284,7 @@ void MotorPropaganda(void) {
                 //accionaRuleta(RANDOM());
                 jugantLCD();
                 jugantSIO();
+                lcdmenu=2;
                 //audioInici();
                 timestamp = 0;
                 state = 10;
@@ -362,6 +364,7 @@ void MotorPropaganda(void) {
                 //accionaRuleta(RANDOM());
                 jugantLCD();
                 jugantSIO();
+                lcdmenu=2;
                 //audioInici();
                 timestamp = 0;
                 state = 10;
@@ -419,6 +422,7 @@ void MotorPropaganda(void) {
                 //accionaRuleta(RANDOM());
                 jugantLCD();
                 jugantSIO();
+                lcdmenu=2;
                 //audioInici();
                 state = 10;
                 timestamp = 0;
@@ -429,16 +433,16 @@ void MotorPropaganda(void) {
 }
 
 #define     MAXCOLUMNES 16
-static char estatLCD,lcdmenu = 0;
-static int getLenght[]={34,35,26,43,33};
+static char estatLCD = 0;
+static int getLenght[]={36,37,28,45,35};
 const unsigned char cadena[] = {"SDM 2013-14     "}; //Mes val que tingui 16 car�cters...
 static unsigned char timerLCD, caracterInici, i, j;
 static unsigned int mostra;
-static unsigned char menuLinia[34]={"Menu Principal - YYY fitxes - XX C"};
-static unsigned char esperaLinia[35]={"Esperant aposta - YYY fitxes - XX C"};
-static unsigned char jugantLinia[26]={"Jugant - YYY fitxes - XX C"};
-static unsigned char afegintLinia[43]={"Afegint/Retirant fitxes - YYY fitxes - XX C"};
-static unsigned char statsLinia[33]={"Estadistiques - YYY fitxes - XX C"};
+static unsigned char menuLinia[36]={"Menu Principal - YYY fitxes - XX C  "};
+static unsigned char esperaLinia[37]={"Esperant aposta - YYY fitxes - XX C  "};
+static unsigned char jugantLinia[28]={"Jugant - YYY fitxes - XX C  "};
+static unsigned char afegintLinia[45]={"Afegint/Retirant fitxes - YYY fitxes - XX C  "};
+static unsigned char statsLinia[35]={"Estadistiques - YYY fitxes - XX C  "};
 
 void netejaProgress(void){
 	LcGotoXY(0, 1);
@@ -460,29 +464,29 @@ void setFitxes(char lcd){
 	switch (lcd)
 	{
 		case 0:
-			menuLinia[18]=temp[0];
-			menuLinia[19]=temp[1];
-			menuLinia[20]=temp[2];
+			menuLinia[17]=temp[1];
+			menuLinia[18]=temp[2];
+			menuLinia[19]=temp[3];
 			break;
 		case 1:
-			esperaLinia[19]=temp[0];
-			esperaLinia[20]=temp[1];
-			esperaLinia[21]=temp[2];
+			esperaLinia[18]=temp[1];
+			esperaLinia[19]=temp[2];
+			esperaLinia[20]=temp[3];
 			break;
 		case 2:
-			jugantLinia[10]=temp[0];
-			jugantLinia[11]=temp[1];
-			jugantLinia[12]=temp[2];
+			jugantLinia[9]=temp[1];
+			jugantLinia[10]=temp[2];
+			jugantLinia[11]=temp[3];
 			break;
 		case 3:
-			statsLinia[26]=temp[0];
-			statsLinia[27]=temp[1];
-			statsLinia[28]=temp[2];
+			afegintLinia[26]=temp[1];
+			afegintLinia[27]=temp[2];
+			afegintLinia[28]=temp[3];
 			break;	
 		case 4:
-			statsLinia[17]=temp[0];
-			statsLinia[18]=temp[1];
-			statsLinia[19]=temp[2];
+			statsLinia[16]=temp[1];
+			statsLinia[17]=temp[2];
+			statsLinia[18]=temp[3];
 			break;		
 	}
 
@@ -497,20 +501,20 @@ void setTemp(char lcd){
 			menuLinia[31]='2';
 			break;
 		case 1:
+			esperaLinia[31]='2';
 			esperaLinia[32]='2';
-			esperaLinia[33]='2';
 			break;
 		case 2:
 			jugantLinia[22]='2';
 			jugantLinia[23]='2';
 			break;
 		case 3:
-			statsLinia[40]='2';
-			statsLinia[41]='2';
+			afegintLinia[39]='2';
+			afegintLinia[40]='2';
 			break;	
 		case 4:
+			statsLinia[29]='2';
 			statsLinia[30]='2';
-			statsLinia[31]='2';
 			break;		
 	}
 
@@ -520,44 +524,43 @@ void setTemp(char lcd){
 void initMotorLCD(void) {
     //Pre: El LCD est� inicialitzat
     timerLCD = TiGetTimer();
-	lcdmenu=0;
     caracterInici = 0;
     LcClear();
     
 }
 
 void PosaChar(char lcd){
-	switch (estatLCD) {
+	switch (lcd) {
         case 0:							//Menu
             LcPutChar(menuLinia[j++]);
-            if (j == 34) j = 0;
+            if (j == 36) j = 0;
             break;
 
 		case 1:							//Esperant
             LcPutChar(esperaLinia[j++]);
-            if (j == 35) j = 0;
+            if (j == 37) j = 0;
             break;
 
 		case 2:							//Jugant
             LcPutChar(jugantLinia[j++]);
-            if (j == 26) j = 0;
+            if (j == 28) j = 0;
             break;
 
 		case 3:							//Afegint retirant
             LcPutChar(afegintLinia[j++]);
-            if (j == 43) j = 0;
+            if (j == 45) j = 0;
             break;
 
 		case 4:							//Stats
             LcPutChar(statsLinia[j++]);
-            if (j == 33) j = 0;
+            if (j == 35) j = 0;
             break;			
 	}
 
 	if (i++ > MAXCOLUMNES) {
 		estatLCD = 1;
 		TiResetTics(timerLCD);
-		LcGotoXY(0, 1);
+		LcGotoXY(0, 0);
     }		
 }
 
@@ -590,7 +593,7 @@ void MotorLCD(void) {
             break;
 
         case 4:
-            if (TiGetTics(timerLCD) >= 250) {
+            if (TiGetTics(timerLCD) >= 350) {
                 //Alerta, ja porto 50 ms. des de l'�ltim refresc
                 caracterInici++;
                 if (caracterInici == getLenght[lcdmenu])
