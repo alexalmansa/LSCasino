@@ -2,7 +2,7 @@
 
 
 static char state, opcio, printat, chars, guanyem, timerPropaganda,lcdmenu = 0;
-static char temp[50], op;
+static char temp[50], op, fitxestemp[3];
 static char valors[3] = {'0', '0', '0'};
 static char caselles[3] = {'0', '0', '0'};
 static char estadistiques[4] = {'0', '0', '0', '0'};
@@ -55,8 +55,8 @@ void apostaStringSIO(void) {
     SiPutsCooperatiu("\r\nPrem '#' per apostar fitxes\r\n\0");
     SiPutsCooperatiu("\r\n\0");
     SiPutsCooperatiu("Fitxes disponibles: ");
-    myItoa(fitxes);
-    SiPutsCooperatiu(temp);
+    //myItoa(fitxes);
+    SiPutsCooperatiu(fitxestemp);
     //SiSendChar(valors[0]);   Podria passar fitxes a ser un CHAR
     //SiSendChar(valors[1]);
     //SiSendChar(valors[2]);
@@ -93,9 +93,6 @@ void jugantSIO(void) {
     SiPutsCooperatiu("\r\n\nIniciant ruleta...\r\n\0");
 }
 
-void jugantLCD(void) {
-    LcPutString("Jugant - 200 fitxes - 69C");
-}
 
 
 // FUNCIONS DE CONTROL DE ERRORS
@@ -158,10 +155,11 @@ void MotorPropaganda(void) {
     switch (state) {
         case 0:
             chars = 0;
-
+            
             if (opcio == 0 && !SiCharAvail() && printat == 0) {
                 lcdmenu=0;
                 Menu();
+                netejaProgress();
                 printat = 1;
 
             } else if (opcio == 0 && SiCharAvail()) {
@@ -174,6 +172,7 @@ void MotorPropaganda(void) {
                 state = 2;
                 printat = 0;
                 convertitGuany = 0;
+                
             } else if (opcio == '2') {
                 lcdmenu=3;
                 fitxesStringSIO();
@@ -193,7 +192,7 @@ void MotorPropaganda(void) {
                 state = 8;
             } else if (timestamp >= 16) {                                                                               // Comença la ruleta
                 //accionaRuleta(RANDOM());
-                jugantLCD();
+                addProgress();
                 jugantSIO();
                 lcdmenu=2;
                 timestamp = 0;
@@ -206,6 +205,7 @@ void MotorPropaganda(void) {
                 SiPutsCooperatiu("[Temps restant ");
                 SiPutsCooperatiu(temp);
                 SiPutsCooperatiu(" segons]");
+                addProgress();
             }
             break;
 
@@ -282,7 +282,6 @@ void MotorPropaganda(void) {
                 state = 11;
             } else if (timestamp >= 16) {
                 //accionaRuleta(RANDOM());
-                jugantLCD();
                 jugantSIO();
                 lcdmenu=2;
                 //audioInici();
@@ -339,7 +338,7 @@ void MotorPropaganda(void) {
                 }else{
                     SiPutsCooperatiu("\r\nHo sentim, has perdut ");
                     SiPutsCooperatiu(temp);                                                                             // ERROR----------------------------------
-                    SiPutsCooperatiu("f itxes!\r\n\0");
+                    SiPutsCooperatiu(" fitxes!\r\n\0");
                     estadistiques[3]+=convertitVal;                                                                     // Sumem a stats les fitxes perdudes
                 }
                 estadistiques[1]++;
@@ -362,7 +361,6 @@ void MotorPropaganda(void) {
         case 12:                                                                                                        // Nova Aposta
             if (timestamp >= 16) {                                                                                      // Comenca la ruleta
                 //accionaRuleta(RANDOM());
-                jugantLCD();
                 jugantSIO();
                 lcdmenu=2;
                 //audioInici();
@@ -420,7 +418,6 @@ void MotorPropaganda(void) {
         case 16:                                                                                                        // Comenca Ruleta
             if (timestamp >= 16) {
                 //accionaRuleta(RANDOM());
-                jugantLCD();
                 jugantSIO();
                 lcdmenu=2;
                 //audioInici();
@@ -433,9 +430,8 @@ void MotorPropaganda(void) {
 }
 
 #define     MAXCOLUMNES 16
-static char estatLCD = 0;
+static char estatLCD,conta = 0;
 static int getLenght[]={36,37,28,45,35};
-const unsigned char cadena[] = {"SDM 2013-14     "}; //Mes val que tingui 16 car�cters...
 static unsigned char timerLCD, caracterInici, i, j;
 static unsigned int mostra;
 static unsigned char menuLinia[36]={"Menu Principal - YYY fitxes - XX C  "};
@@ -448,19 +444,20 @@ void netejaProgress(void){
 	LcGotoXY(0, 1);
 	LcPutString("                ");
 	LcGotoXY(0, 1);
+    conta=0;
 }
 
 void addProgress(void){
-	LcPutChar(0x10);																	// Caracter de casella plena
+    LcGotoXY(conta, 1);
+	LcPutChar('X');																	// Caracter de casella plena
+    conta++;
 }
 
-void setMenuLCD(void){
-	LcGotoXY(0, 1);
-
-}
 
 void setFitxes(char lcd){
 	myItoa(fitxes);
+    cstringcpy(temp,fitxestemp);
+    
 	switch (lcd)
 	{
 		case 0:
@@ -520,6 +517,13 @@ void setTemp(char lcd){
 
 }
 
+void cstringcpy(char *src, char * dest)
+{
+    while (*src) {
+        *(dest++) = *(src++);
+    }
+    *dest = '\0';
+}
 
 void initMotorLCD(void) {
     //Pre: El LCD est� inicialitzat
