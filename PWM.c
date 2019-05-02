@@ -6,7 +6,9 @@
 //#define TEMPSA1 20;
 static char estatPWM;
 static char timerPWM, temps;
-static char PWM,countPWM;
+static char countPWM;
+static int TEMPSA1, GRAUSXFLANC = 1;
+#define PWM LATAbits.LATA4
 
 void PWMInit(){
     void PwInit(){
@@ -20,6 +22,13 @@ void PWMInit(){
         //Post: Posa a 1 o 0 el PWM , depenent del temps que estigui
 
         PWM = (PWM >= temps ? 1 : 0);
+
+
+    }
+
+    void grausToFlancs(int graus) {
+
+
 
 
     }
@@ -41,12 +50,10 @@ void PWMInit(){
                 } else{
                     PWM = 0;
                 }
-                
 
                 break;
             case 1:
                 if(countPWM >= start){
-
                     estatPWM = 0;
                 }else{
                     temps = TiGetTics(timerPWM) ;
@@ -56,9 +63,9 @@ void PWMInit(){
                         estatPWM = 2;
                     }
                 }
-                
+
                 break;
-               
+
                 case 2:
                     TiResetTics(timerPWM);
                     incrementPWM();
