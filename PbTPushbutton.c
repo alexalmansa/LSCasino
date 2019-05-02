@@ -1,29 +1,39 @@
 #include "PbTPushbutton.h"
-#include "../../../../../Downloads/PIC24FJ32GA002Test/AuTAudio.h"
-#include "../../../../../Downloads/PIC24FJ32GA002Test/SwTSwitch.h"
 
 
 
-static char estat,timer, temp;
+static char estat,timer, charAbaliable;
+char asterisc, numero,hastag;
 
 void PbInit(void){
-    TRISBbits.TRISB6 = 1;
-    TRISBbits.TRISB7 = 1;
-    TRISBbits.TRISB8 = 1;
-    TRISBbits.TRISB9 = 1;
-    TRISBbits.TRISB10 = 1;
-    TRISBbits.TRISB11 = 1;
-    TRISBbits.TRISB12 = 1;
+    //Entrades del teclat (FILES)
+#define  TRISBbits.LATB6 = 0;
+#define  TRISBbits.LATB7 = 0;
+#define  TRISBbits.LATB8 = 0;
+#define  TRISBbits.LATB9 = 0;
+
+//Sortides del teclat (COLUMNES)
+#define  TRISBbits.LATB10 = 1;
+#define  TRISBbits.LATB11 = 1;
+#define  TRISBbits.LATB12 = 1;
+
+    
 
 
 
-
-
-    int f15,f16,f17,f18,c21,c22,c23
-    int numero;
-    //Cal posar tots els polsadors aqui
     estat = 0;
     timer = TiGetTimer();
+}
+
+char CharAbaliable(){
+    if (charAbaliable ==1){
+      charAbaliable =0;  
+      return 1;  
+    }else{
+      return 0;    
+    }
+    
+    
 }
 
 
@@ -31,72 +41,70 @@ void MotorPulsador(){
     switch(estat){
         case 1:
 
-            if(f15 == f16 == f17 == f18 == 0){
+            if(F1 == F2 == F3 == F4 == 0){
               if (TiGetTics(timer) >= 100){
                 estat = 2;
-                TiResetTics(t);
-                columna = 2;
+                TiResetTics(timer);
+                C2 = 1;
               }
             }else{
               estat=4;
-              TiResetTics(t);
+              TiResetTics(timer);
             }
             break;
         case 2:
-          if(f15 == f16 == f17 == f18 == 0){
+          if(F1 == F2 == F3 == F4 == 0){
             if (TiGetTics(timer) >= 100){
               estat = 3;
-              TiResetTics(t);
-              columna = 3;
+              TiResetTics(timer);
+              C3 = 1;
             }
           }else{
             estat=4;
-            TiResetTics(t);
+            TiResetTics(timer);
           }
           break;
         case 3:
 
-        if(f15 == f16 == f17 == f18 == 0){
+        if(F1 == F2 == F3 == F4 == 0){
           if (TiGetTics(timer) >= 100){
             estat = 1;
-            TiResetTics(t);
-            columna = 1;
+            TiResetTics(timer);
+            C1 = 1;
           }
         }else{
           estat=4;
-          TiResetTics(t);
+          TiResetTics(timer);
         }
         break;
 
-            //Han apretat el pulsador de - toca fer feina:
-            numero = 1 *c21 + 2*c22 + 3*c23;
-            estat = 3;
-            TiResetTics(timer);
-            break;
 
 
         case 4:
-          if(f15 + f16 + f17 + f18 >= 1 && TiGetTics(timer) >= 100){
+          if(F1 + F2 + F3 + F4 >= 1 && TiGetTics(timer) >= 100){
             //Espero rebots....
                estat = 5;
             }
-            if (TiGetTics(timer) >= 100 && f15 + f16 + f17 + f18 == 0) {
+            if (TiGetTics(timer) >= 100 && F1 + F2 + F3 + F4 == 0) {
               estat = 1;
-              TiResetTics(t);
+              TiResetTics(timer);
             }
 
             break;
         case 5:
             //Han apretat el teclat, toca fer feina
 
-            numero = (columna -1 ) *3 +  (1*f15 + 2*f16 + 3*f17);
-            asterisc = c21 * f4;
-            hastag = c23 * f4;
+            numero = ((1*C1 + 2*C2 + 3*C3) -1 ) *3 +  (1*F1 + 2*F2 + 3*F3);
+            asterisc = C1 * F4;
+            hastag = C3 * F4;
+            
             estat = 1;
+            charAbaliable = 1;
             if (TiGetTics(timer) >= 100) {
               estat = 1;
-              TiResetTics(t);
-            }            break;
+              TiResetTics(timer);
+            }            
+            break;
 
     }
 }
