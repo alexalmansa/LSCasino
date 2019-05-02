@@ -1,8 +1,8 @@
 #include "PrTPropaganda.h"
 
 
-static char state, opcio, printat, chars, guanyem, timerPropaganda,lcdmenu = 0;
-static char temp[50], op, fitxestemp[3];
+static char state, opcio, printat, chars, guanyem, timerPropaganda,lcdmenu,conta = 0;
+static char temp[50], op, fitxestemp[3], celatemp[3];
 static char valors[3] = {'0', '0', '0'};
 static char caselles[3] = {'0', '0', '0'};
 static char estadistiques[4] = {'0', '0', '0', '0'};
@@ -72,7 +72,7 @@ void fitxesStringSIO(void) {
 void statsStringSIO(void) {
     SiPutsCooperatiu("\r\n\n\nPanell d'estadistiques: \n");
     SiPutsCooperatiu("\r\nFitxes actuals: \0");
-    // Cal enviar el int de numero de fitxes
+    SiPutsCooperatiu(fitxestemp);
     SiPutsCooperatiu("\r\n\0");
     SiPutsCooperatiu("Partides guanyades: \0");
     SiSendChar(estadistiques[0]);
@@ -299,7 +299,7 @@ void MotorPropaganda(void) {
 
                 myItoa(casellaGuany);                                                                                   // ERROR----------------------------------
                 SiPutsCooperatiu("\r\nLa cela gunyadora es la ");
-                SiPutsCooperatiu(temp);                                                                                 // ERROR----------------------------------
+                SiPutsCooperatiu(celatemp);                                                                                 // ERROR----------------------------------
                 SiPutsCooperatiu(", guanyen les ");
                 
                 int resultat = casellaGuany % 2;
@@ -319,6 +319,9 @@ void MotorPropaganda(void) {
                     guanyem=1;
                 }
                 state=7;
+            }else{
+                myItoa(casellaGuany);                 
+                cstringcpy(temp,celatemp);
             }
 
             break;
@@ -423,6 +426,17 @@ void MotorPropaganda(void) {
                 //audioInici();
                 state = 10;
                 timestamp = 0;
+            }else if (timestamp2 != timestamp) {
+                timestamp2 = timestamp;
+                myItoa(timestamp);
+                SiSendChar('\r');
+                SiPutsCooperatiu("[Temps restant ");
+                SiPutsCooperatiu(temp);
+                SiPutsCooperatiu(" segons]");
+                
+                while(timestamp != conta){
+                    addProgress();
+                }
             }
             break;
 
@@ -430,7 +444,7 @@ void MotorPropaganda(void) {
 }
 
 #define     MAXCOLUMNES 16
-static char estatLCD,conta = 0;
+static char estatLCD = 0;
 static int getLenght[]={36,37,28,45,35};
 static unsigned char timerLCD, caracterInici, i, j;
 static unsigned int mostra;
