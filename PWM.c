@@ -7,13 +7,13 @@
 //#define TEMPSA1 20;
 static char estatPWM;
 static char timerPWM, temps;
-static char countPWM, start;
-static int TEMPSA1, GRAUSXFLANC = 27;
+static char countPWM, start = 0, startAntic;
+static int TEMPSA1= 1, GRAUSXFLANC = 1, FREQ = 20;
 
 
     void PWMInit(void){
         timerPWM = TiGetTimer();
-      estatPWM = 0;
+        estatPWM = 0;
         PWM = '0';
         //TRISBbits.TRISB10 = 0;
 }
@@ -21,7 +21,7 @@ static int TEMPSA1, GRAUSXFLANC = 27;
 
         //Post: Posa a 1 o 0 el PWM , depenent del temps que estigui
 
-        PWM = (PWM >= temps ? 1 : 0);
+        PWM = (TEMPSA1 >= temps ? 1 : 0);
 
 
     }
@@ -36,30 +36,33 @@ static int TEMPSA1, GRAUSXFLANC = 27;
     }
 
     void setGraus(int graus) {
+      startAntic = start;
       start = graus * GRAUSXFLANC;
+      
     }
 
     void MotorPWM (void) {
         switch(estatPWM) {
             case 0:
 
-                if(start > countPWM){
+                if(start > countPWM && start != startAntic){
                     estatPWM = 1;
                     TiResetTics(timerPWM);
                 } else{
                     PWM = 0;
+                    
                 }
 
                 break;
             case 1:
                 if(countPWM >= start){
                     estatPWM = 0;
-                    //countPWM = 0;
+                    countPWM = 0;
                 }else{
                     temps = TiGetTics(timerPWM) ;
                     changePWM();
 
-                    if(temps > TEMPSA1){
+                    if(temps > FREQ){
                         estatPWM = 2;
                     }
                 }
