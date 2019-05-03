@@ -1,9 +1,9 @@
-
-#include "AuTAudio.h"
+include "AuTAudio.h"
 #include "Thermometer.h"
 
 static char TimerTermo, state = 0, clocks = 0;
 int temp;
+static char arr[3];
 
 void ThermometerInit(){
     
@@ -13,7 +13,24 @@ void ThermometerInit(){
     TiResetTics(TimerTermo);
     INOUT = 0;
 }
+char* GetTemperature(){
+    
+    //Post: escriu el valor ascii de num a tmp;
+    arr[0] = (char) (temp / 1000);
+    temp = temp - (arr[0] * 1000);
+    arr[1] = (char) (temp / 100);
+    temp = temp - (arr[1] * 100);
+    arr[2] = (char) (temp / 10);
+    temp = temp - (arr[2] * 10);
+    arr[3] = temp + '0';
+    arr[4] = '\0';
+    arr[2] += '0';
+    arr[1] += '0';
+    arr[0] += '0';
+    return arr;
 
+}
+    
 
 void MotorThermometer(void) {
 	
