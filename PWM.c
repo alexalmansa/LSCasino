@@ -1,7 +1,3 @@
-//
-// Created by Alex Almansa on 18/04/2019.
-//
-
 #include "PWM.h"
 #include "time.h"
 //#define TEMPSA1 20;
@@ -14,14 +10,14 @@ static int TEMPSA1= 1, GRAUSXFLANC = 1, FREQ = 20;
     void PWMInit(void){
         timerPWM = TiGetTimer();
         estatPWM = 0;
-        PWM = '0';
+        PWMV = '0';
         //TRISBbits.TRISB10 = 0;
 }
     void changePWM(void) {
 
         //Post: Posa a 1 o 0 el PWM , depenent del temps que estigui
 
-        PWM = (TEMPSA1 >= temps ? 1 : 0);
+        PWMV = (TEMPSA1 >= temps ? 1 : 0);
 
 
     }
@@ -49,7 +45,7 @@ static int TEMPSA1= 1, GRAUSXFLANC = 1, FREQ = 20;
                     estatPWM = 1;
                     TiResetTics(timerPWM);
                 } else{
-                    PWM = 0;
+                    PWMV = 0;
                     
                 }
 
