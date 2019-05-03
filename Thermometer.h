@@ -1,4 +1,4 @@
-/* 
+//* 
  * File:   
  * Author: 
  * Comments:
@@ -18,6 +18,7 @@
 
 void MotorThermometer(void);
 void llegeixBit();
+char* GetTemperature();
 
 
 
