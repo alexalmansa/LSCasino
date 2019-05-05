@@ -320,7 +320,7 @@ void MotorPropaganda(void) {
 
         case 10:                                                                                                        // Accions ruleta
             chars = 0;
-            //audioDurantGira();
+            
             if (timestamp >= 5) {                                                                                       // T_ que ha de girar
                 //audioFinal();
                 //fitxes=apostaAcabadaSIO();
@@ -349,6 +349,7 @@ void MotorPropaganda(void) {
                 }
                 state = 7;
             } else {
+                //audioDurantGira();          posara un char a 1, per tant no tornara a comencar cada cop q sexecuti aqueta funcio, quan acabi de reproduirse es posa a 0
                 myItoa(casellaGuany);
                 cstringcpy(temp, celatemp);
             }
@@ -536,6 +537,7 @@ void setFitxes(char lcd) {
 }
 
 void setTemp(char lcd) {
+    char temperatura [3] = (char*)GetTemperature();
     //myItoa(temperatura);
     switch (lcd) {
         case 0:
