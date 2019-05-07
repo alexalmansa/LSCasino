@@ -21,6 +21,11 @@ void AuInit(void);
 
 void MotorAudio(void);
 
+void AuControlInit(void);
+//Posa el port RA1 de sortida i demana un timer
+
+void MotorAudioControl(void);
+
 char changeAudioStatus();
     //Post Canvia l'estat d'audio
 
@@ -41,7 +46,7 @@ void turnOnAudio();
 //Post: Encent l'altaveu
 
 void seguentFrequencia();
-//Post: Canvia el periode del altaveu amb una desviació maxima del 
+//Post: Canvia el periode del altaveu amb una desviaciÃ³ maxima del 
 //original de MAX_PERIODES
 
 
