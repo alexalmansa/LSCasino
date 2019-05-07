@@ -1,4 +1,6 @@
 #include "AuTAudio.h"
+#include "AdTADC.h"
+
 #include <xc.h>
 
 static unsigned char timerAudio,timerTemps, estat,periode[MAX_PERIODES]={2,3,4,5},frequencia;
@@ -72,19 +74,24 @@ void seguentFrequencia(){
     }
 }
 
-static unsigned char estatt, melodia, cantat;
+static unsigned char estatt, melodia, cantat, tempsConvertit, vanalog;
 
 void AuControlInit(){
     estatt = 1;
     melodia = 0;
     cantat=0;
     frequencia=0;
+    vanalog=AdGetMostra();
+    tempsConvertit=(1000*vanalog)/255;
+            
 }
 
 void MotorControlAudio(){
     switch(estatt){
         case 0:
-            if (TiGetTics(timerTemps) >= 1000){
+            vanalog=AdGetMostra();
+            tempsConvertit=(1000*vanalog)/255;
+            if (TiGetTics(timerTemps) >= tempsConvertit){
                 if(melodia==0){
                     seguentFrequencia();
                 }else if(melodia==1){
