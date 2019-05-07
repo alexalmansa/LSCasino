@@ -73,13 +73,13 @@ void seguentFrequencia(){
     }
 }
 
-static unsigned char estatt, melodia, cantat, cantamAlgo;
+static unsigned char estatt, melodia, cantat;
 
 void AuControlInit(){
     estatt = 0;
     melodia = 0;
     cantat=0;
-    cantamAlgo=1;
+    
 }
 
 void MotorControlAudio(){
@@ -106,14 +106,32 @@ void MotorControlAudio(){
             break;
             
         case 1:
-            cantat=0;
-            if(cantamAlgo==1){
-                cantamAlgo=0;
-                estatt = 0;
-                TiResetTics(timerTemps);
-                changeAudioStatus();
-            }
+
             break;
         
     }
+}
+
+void audioInicial(){
+    estatt=0;
+    melodia=0;
+    cantat=0;
+    TiResetTics(timerTemps);
+    changeAudioStatus();
+}
+
+void audioDurant(){
+    estatt=0;
+    melodia=1;
+    cantat=0;
+    TiResetTics(timerTemps);
+    changeAudioStatus();
+}
+
+void audioFinal(){
+    estatt=0;
+    melodia=2;
+    cantat=0;
+    TiResetTics(timerTemps);
+    changeAudioStatus();
 }
