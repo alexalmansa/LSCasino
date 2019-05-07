@@ -113,7 +113,7 @@ void MotorControlAudio(){
 }
 
 void audioInicial(){
-    estatt=0;
+    estatt=1;
     melodia=0;
     cantat=0;
     TiResetTics(timerTemps);
