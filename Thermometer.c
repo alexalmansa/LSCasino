@@ -1,8 +1,8 @@
-include "AuTAudio.h"
+#include "AuTAudio.h"
 #include "Thermometer.h"
 
 static char TimerTermo, state = 0, clocks = 0;
-int temp;
+int temp, tempbona;
 static char arr[3];
 
 void ThermometerInit(){
@@ -15,21 +15,11 @@ void ThermometerInit(){
 }
 char* GetTemperature(){
     
-    //Post: escriu el valor ascii de num a tmp;
-    arr[0] = (char) (temp / 1000);
-    temp = temp - (arr[0] * 1000);
-    arr[1] = (char) (temp / 100);
-    temp = temp - (arr[1] * 100);
-    arr[2] = (char) (temp / 10);
-    temp = temp - (arr[2] * 10);
-    arr[3] = temp + '0';
-    arr[4] = '\0';
-    arr[2] += '0';
-    arr[1] += '0';
-    arr[0] += '0';
-    return arr;
+return arr;
 
 }
+
+
     
 
 void MotorThermometer(void) {
@@ -53,6 +43,11 @@ void MotorThermometer(void) {
 				INOUT = 1;
 				clocks = 0;
 				state = 3;
+                SERIE = 0;
+                //TiResetTics(TimerTermo);
+                tempbona = temp;
+                temp = 0;
+
 			}
 		break;
 		case 2:
@@ -61,15 +56,19 @@ void MotorThermometer(void) {
 			state = 1;
 		break;
 		case 3:
-			if (clocks <= 16) {
-				clocks++;
-                T = 1;
-				state = 4;
-			}
-			else if (clocks>16) {
-				//CS = 1;
-				state = 0;
-			}
+            //Post: escriu el valor ascii de num a tmp;
+            arr[0] = (char) (tempbona / 1000);
+            tempbona = tempbona - (arr[0] * 1000);
+            arr[1] = (char) (tempbona / 100);
+            tempbona = tempbona - (arr[1] * 100);
+            arr[2] = (char) (tempbona / 10);
+            tempbona = tempbona - (arr[2] * 10);
+            arr[3] = tempbona + '0';
+            arr[4] = '\0';
+            arr[2] += '0';
+            arr[1] += '0';
+            arr[0] += '0';
+            state = 0;
 		break;
 		case 4:
 			state = 3;
