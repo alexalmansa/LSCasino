@@ -8,7 +8,7 @@ void AuInit(){
     AUDIO_ON();
     timerAudio = TiGetTimer();
     timerTemps = TiGetTimer();
-    estat = 0;
+    estat = 2;
     frequencia = 0;
 }
 
@@ -21,7 +21,6 @@ unsigned char* getAudioPeriode(void){
     periode[1] = nouPeriode+1;
     periode[2] = nouPeriode+2;
     periode[3] = nouPeriode+3;
-
 }*/
 
 void turnOffAudio(){
@@ -98,7 +97,7 @@ void MotorControlAudio(){
                 }
                 cantat++;
                 TiResetTics(timerTemps);
-                if(cantat==3){
+                if(cantat == 3){
                     estatt = 1;
                     changeAudioStatus();
                 }
