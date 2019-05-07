@@ -49,5 +49,11 @@ void seguentFrequencia();
 //Post: Canvia el periode del altaveu amb una desviació maxima del 
 //original de MAX_PERIODES
 
+void audioInicial();
+
+void audioDurant();
+
+void audioFinal();
+
 
 #endif	/* AUTAUDIO_H */
