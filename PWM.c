@@ -1,10 +1,14 @@
+//
+// Created by Alex Almansa on 18/04/2019.
+//
+
 #include "PWM.h"
 #include "time.h"
 //#define TEMPSA1 20;
 static char estatPWM;
 static char timerPWM, temps;
 static char countPWM, start = 0, startAntic;
-static int TEMPSA1= 1, GRAUSXFLANC = 1, FREQ = 20;
+static int TEMPSA1= 4, GRAUSXFLANC = 1, FREQ = 20;
 
 
     void PWMInit(void){
