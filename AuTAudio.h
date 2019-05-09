@@ -26,6 +26,14 @@ void MotorAudio(void);
 
 void MotorControlAudio(void);
 
+void audioInicial(void);
+
+void audioDurant(void);
+
+void audioFinalPerd(void);
+
+void audioFinalGuany(void);
+
 char changeAudioStatus();
     //Post Canvia l'estat d'audio
 
