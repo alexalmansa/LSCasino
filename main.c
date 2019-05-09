@@ -12,7 +12,6 @@
 
 //#include "TiTTimer.h"
 #include "time.h"
-#include "LeTLeds.h"
 #include "LcTLCD.h"
 #include "AuTAudio.h"
 #include "SwTSwitch.h"
@@ -34,7 +33,7 @@ _CONFIG2(		IESO_OFF				// Two Speed Start-up               DISABLED
 		 	&	FNOSC_FRCPLL        		// Fast RC oscillator w/ divide and PLL
 		 	& 	FCKSM_CSDCMD			// Clock switching and clock monitor
 			&	OSCIOFNC_ON			// OSCO/RC15 function               RC15
-			&	IOL1WAY_OFF			// Una configuraci€ per I/O remapejables deshabilitat
+			&	IOL1WAY_OFF			// Una configuraci√õ per I/O remapejables deshabilitat
 			&	POSCMOD_NONE			// Primary disabled
 			& 	I2C1SEL_SEC
 );
@@ -55,7 +54,7 @@ _CONFIG1(		JTAGEN_OFF                              // JTAG                      
 
 
 void initCPU(){
-    CLKDIV=0x0000;          // DivisiÛ del clock pel timer i CPU per 1
+    CLKDIV=0x0000;          // Divisi√≥ del clock pel timer i CPU per 1
  //   OSCCON=0x0020;
     RCONbits.SWDTEN = 0;    // Desactivem el Watchdog
 }
@@ -66,7 +65,6 @@ void initCPU(){
 int main(void){
     initCPU();
     TiInit();
-    LeInit();
     LcInit(2,16);
     AuInit();
     AuControlInit();
