@@ -83,14 +83,15 @@ void AuControlInit(){
     cantat=0;
     frequencia=0;
     vanalog=AdGetMostra(); 
-    tempsConvertit=(1000*binaryToDecimal(vanalog))/1024;
+    tempsConvertit=1.5*vanalog+200;
             
 }
 
 void MotorControlAudio(){
     switch(estatt){
         case 0:
-            
+            vanalog=AdGetMostra(); 
+            tempsConvertit=1.5*vanalog+200;
             if (TiGetTics(timerTemps) >= tempsConvertit){
                 if(melodia==0){
                     seguentFrequencia();
@@ -107,8 +108,6 @@ void MotorControlAudio(){
                 if(cantat == 3){
                     estatt = 1;
                     changeAudioStatus();
-                }else{
-                    estatt = 2;
                 }
             }
             break;
@@ -120,7 +119,7 @@ void MotorControlAudio(){
         case 2:
             vanalog=AdGetMostra();
             if(vanalog != vanalogantic) {
-                tempsConvertit=(1000*binaryToDecimal(vanalog))/1024;
+                tempsConvertit=(1000*binaryToDecimal(vanalog))/1024;//puc probar de fer vanalog/1000??
                 vanalogantic=vanalog;
             }
             estatt = 0;
