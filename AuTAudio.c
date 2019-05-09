@@ -102,6 +102,11 @@ void MotorControlAudio(){
                     seguentFrequencia();
                     seguentFrequencia();
                     seguentFrequencia();
+                }else if(melodia==3){
+                    seguentFrequencia();
+                    seguentFrequencia();
+                    seguentFrequencia();
+                    seguentFrequencia();
                 }
                 cantat++;
                 TiResetTics(timerTemps);
@@ -116,15 +121,6 @@ void MotorControlAudio(){
 
             break;
         
-        case 2:
-            vanalog=AdGetMostra();
-            if(vanalog != vanalogantic) {
-                tempsConvertit=(1000*binaryToDecimal(vanalog))/1024;//puc probar de fer vanalog/1000??
-                vanalogantic=vanalog;
-            }
-            estatt = 0;
-            
-            break;
     }
 }
 
@@ -138,17 +134,28 @@ void audioInicial(){
 }
 
 void audioDurant(){
+    if(estatt==1){
+        estatt=0;
+        melodia=1;
+        cantat=0;
+        TiResetTics(timerTemps);
+        changeAudioStatus();
+        frequencia=0;
+    }
+}
+
+void audioFinalGuany(){
     estatt=0;
-    melodia=1;
+    melodia=2;
     cantat=0;
     TiResetTics(timerTemps);
     changeAudioStatus();
     frequencia=0;
 }
 
-void audioFinal(){
+void audioFinalPerd(){
     estatt=0;
-    melodia=2;
+    melodia=3;
     cantat=0;
     TiResetTics(timerTemps);
     changeAudioStatus();
