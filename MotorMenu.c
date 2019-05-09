@@ -208,6 +208,7 @@ void MotorPropaganda(void) {
                 printat = 0;
             } else if (opcio == '3') {
                 lcdmenu = 4;
+                audioDurant();
                 statsStringSIO();
                 state = 5;
                 printat = 0;
@@ -224,7 +225,7 @@ void MotorPropaganda(void) {
                 jugantSIO();
                 lcdmenu = 2;
                 timestamp = 0;
-                //audioInici();
+                audioInicial();
                 state = 10;
             } else if (timestamp2 != timestamp) {
                 timestamp2 = timestamp;
@@ -255,6 +256,7 @@ void MotorPropaganda(void) {
             if (timestamp2 != total) {
                 timestamp2 = total;
                 myItoa(total);
+                
                 SiPutsCooperatiu("\rTemps del sistema: ");
                 SiPutsCooperatiu(temp);
             } else if (SiCharAvail()) {
@@ -322,8 +324,6 @@ void MotorPropaganda(void) {
             chars = 0;
             
             if (timestamp >= 5) {                                                                                       // T_ que ha de girar
-                //audioFinal();
-                //fitxes=apostaAcabadaSIO();
 
                 myItoa(casellaGuany);
 
@@ -341,15 +341,20 @@ void MotorPropaganda(void) {
 
                 guanyem = 0;
                 if (casellaGuany == convertitCas) {
+                    audioFinalGuany();
                     fitxesguanyades = convertitVal * 37;
                     guanyem = 1;
                 } else if ((resultat == 0 && convertitCas == 200) || (resultat == 1 && convertitCas == 100)) {
+                    audioFinalGuany();
                     fitxesguanyades = convertitVal * 2;
                     guanyem = 1;
+                }else{
+                    audioFinalPerd();
                 }
+                      
                 state = 7;
             } else {
-                //audioDurantGira();          posara un char a 1, per tant no tornara a comencar cada cop q sexecuti aqueta funcio, quan acabi de reproduirse es posa a 0
+                audioDurant();          //posara un char a 1, per tant no tornara a comencar cada cop q sexecuti aqueta funcio, quan acabi de reproduirse es posa a 0
                 myItoa(casellaGuany);
                 cstringcpy(temp, celatemp);
             }
@@ -402,7 +407,7 @@ void MotorPropaganda(void) {
                 //accionaRuleta(RANDOM());
                 jugantSIO();
                 lcdmenu = 2;
-                //audioInici();
+                audioInicial();
                 timestamp = 0;
                 state = 10;
             } else if (SiCharAvail()) {
@@ -458,7 +463,7 @@ void MotorPropaganda(void) {
                 //accionaRuleta(RANDOM());
                 jugantSIO();
                 lcdmenu = 2;
-                //audioInici();
+                audioInicial();
                 state = 10;
                 timestamp = 0;
             } else if (timestamp2 != timestamp) {
@@ -537,7 +542,7 @@ void setFitxes(char lcd) {
 }
 
 void setTemp(char lcd) {
-    char temperatura [3] = (char*)GetTemperature();
+//    char temperatura [3] = (char*)GetTemperature();
     //myItoa(temperatura);
     switch (lcd) {
         case 0:
@@ -640,7 +645,7 @@ void MotorLCD(void) {
 
         case 4:
             if (TiGetTics(timerLCD) >= 350) {
-                //Alerta, ja porto 50 ms. des de l'�ltim refresc
+                //Alerta, ja porto 50 ms. des de l'?ltim refresc
                 caracterInici++;
                 if (caracterInici == getLenght[lcdmenu])
                     caracterInici = 0;
