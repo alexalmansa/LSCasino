@@ -1,4 +1,5 @@
 
+
 /* 
  * File:   
  * Author: 
@@ -12,6 +13,10 @@
 #define	PWM
 
 #include <xc.h> // include processor files - each processor file is guarded.  
+#define PWMV LATAbits.LATA4
+#define PWMON TRISAbits.TRISA4 = 0
+#define PWMOFF TRISAbits.TRISA4 = 1
+
 
 void MotorPWM (void);
 
@@ -23,7 +28,7 @@ void PWMInit(void);
 
 void setGraus(int graus);
 
-#define PWM LATAbits.LATA4
+
 
 
 
