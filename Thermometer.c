@@ -1,88 +1,140 @@
-#include "AuTAudio.h"
 #include "Thermometer.h"
-
 static char TimerTermo, state = 0, clocks = 0;
-int temp, tempbona;
-static char arr[3];
+unsigned int temp, tempbona;
 
-void ThermometerInit(){
-    
+char negat;
+
+unsigned char mayor[8];
+unsigned char menor[8];
+static char tempe[5];
+long int entera,decimal;
+
+void ThermometerInit() {
+
     state = 0;
-   
+
     TimerTermo = TiGetTimer();
     TiResetTics(TimerTermo);
     INOUT = 0;
-}
-char* GetTemperature(){
     
-return arr;
-
+    mayor[7]=1;
+    mayor[6]=1;
+    mayor[5]=1;
+    mayor[4]=0;
+    mayor[3]=0;
+    mayor[2]=1;
+    mayor[1]=0;
+    mayor[0]=0;
+    
 }
 
+char* GetTemperature() {
 
-    
+    return tempe;
+
+}
 
 void MotorThermometer(void) {
-	
 
-	switch(state) {
-		case 0:
-			if (TiGetTics(TimerTermo) > 1000) {
-				//CS = 0;   No se si caldra
-				state = 1;
+
+    switch (state) {
+        case 0:
+            if (TiGetTics(TimerTermo) > 1000) {
+                //CS = 0;   No se si caldra
+                state = 1;
                 INOUT = 0;
-			}
-		break;
-		case 1:
-			if (clocks < 16) {
-				clocks ++;
-				T = 1;
-				state = 2;
-			}
-            else if (clocks >= 16) {
-				INOUT = 1;
-				clocks = 0;
-				state = 3;
+            }
+            break;
+        case 1:
+            if (clocks < 16) {
+                clocks++;
+                T = 1;
+                state = 2;
+            } else if (clocks >= 16) {
+                INOUT = 1;
+                clocks = 0;
+                state = 3;
                 SERIE = 0;
                 //TiResetTics(TimerTermo);
                 tempbona = temp;
                 temp = 0;
 
-			}
-		break;
-		case 2:
-			T = 0;
-			llegeixBit();
-			state = 1;
-		break;
-		case 3:
-            //Post: escriu el valor ascii de num a tmp;
-            arr[0] = (char) (tempbona / 1000);
-            tempbona = tempbona - (arr[0] * 1000);
-            arr[1] = (char) (tempbona / 100);
-            tempbona = tempbona - (arr[1] * 100);
-            arr[2] = (char) (tempbona / 10);
-            tempbona = tempbona - (arr[2] * 10);
-            arr[3] = tempbona + '0';
-            arr[4] = '\0';
-            arr[2] += '0';
-            arr[1] += '0';
-            arr[0] += '0';
-            state = 0;
-		break;
-		case 4:
-			state = 3;
+            }
+            break;
+        case 2:
             T = 0;
-		break;
-	}
+            //llegeixBit();
+            state = 1;
+            break;
+        case 3:
+            //Post: escriu el valor ascii de num a tmp;
+            entera=0;
+            decimal=0;
+            
+            if(mayor[6]==1){entera=entera+128.0;}
+            if(mayor[5]==1){entera=entera+64.0;}
+            if(mayor[4]==1){entera=entera+32.0;}
+            if(mayor[3]==1){entera=entera+16.0;}
+            if(mayor[2]==1){entera=entera+8.0;}
+            if(mayor[1]==1){entera=entera+4.0;}
+            if(mayor[0]==1){entera=entera+2.0;}
+
+            
+            if(menor[7]==1){entera=entera+1.0;}
+            if(menor[6]==1){decimal=decimal+500;}
+            if(menor[5]==1){decimal=decimal+250;}
+            if(menor[4]==1){decimal=decimal+125;}
+            
+            //sprintf(s1, "%3.1f", ((mayor<<8|menor)>>3)*0.0625);   
+            if(mayor[7]==1)
+            {
+                entera=511-(entera+256);
+                negat=1;
+                decimal=1000-decimal;
+            }else{
+                negat=0;
+            }
+           
+            
+            myItoaa(entera);
+            
+                    
+            state = 0;
+            break;
+        case 4:
+            state = 3;
+            T = 0;
+            break;
+    }
 }
 
-void llegeixBit(){
-	//No mola gaire aquest bucle
-	int i;
-	for( i= 0; i < clocks; i++)
-	{
-		temp = temp + 2 * SERIE;
-	}
-	
+
+
+void llegeixBit() {
+    if(clocks < 8){
+      mayor[clocks]=1;  
+    }else{
+      menor[clocks-8]=SERIE;
+    }
+    //temp <<= 1;
+	//if(SERIE)temp |= 1;
+
+}
+
+void myItoaa(int num) {
+    //Post: escriu el valor ascii de num a tmp;
+    tempe[0] = (char) (num / 1000);
+    num = num - (tempe[0] * 1000);
+    tempe[1] = (char) (num / 100);
+    num = num - (tempe[1] * 100);
+    tempe[2] = (char) (num / 10);
+    num = num - (tempe[2] * 10);
+    tempe[3] = num + '0';
+    tempe[4] = '\0';
+    tempe[2] += '0';
+    tempe[1] += '0';
+    tempe[0] += '0';
+    if(negat == 1){
+        tempe[0] = '-';
+    }
 }
