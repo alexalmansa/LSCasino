@@ -1,5 +1,6 @@
 
 
+
 //
 // Created by Alex Almansa on 18/04/2019.
 //
@@ -9,7 +10,7 @@
 //#define TEMPSA1 20;
 static char estatPWM;
 static char timerPWM, temps;
-static char countPWM, start = 0;
+static char start = 0;
 
 static int TEMPSA1= 1, GRAUSXFLANC = 1, FREQ = 20,countPWM=0;
 
