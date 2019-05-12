@@ -2,7 +2,7 @@
  * File:   PbTPushbutton.h
  * Author: JNM
  *
- * TAD Que controla un parell de pulsadors i té un motor per filtrar els rebots
+ * TAD Que controla un parell de pulsadors i tÃ© un motor per filtrar els rebots
  *
  * Created on 27 de enero de 2014, 19:19
  */
@@ -17,11 +17,11 @@
 #define F4 LATBbits.LATB9
 
  //Columnes    
-#define C1 LATBbits.LATB10
-#define C2 LATBbits.LATB11
-#define C3 LATBbits.LATB12
+#define C1 PORTBbits.PORTB10
+#define C2 PORTBbits.PORTB11
+#define C3 PORTBbits.PORTB12
 
-#define STEPBL  5 //Més val que sigui múltiple de BLPERIOD....
+#define STEPBL  5 //MÃ©s val que sigui mÃºltiple de BLPERIOD....
 
 #include<xc.h>
 #include "time.h"
