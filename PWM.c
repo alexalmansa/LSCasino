@@ -12,7 +12,7 @@ static char estatPWM;
 static char timerPWM, temps;
 static char start = 0;
 
-static int TEMPSA1= 1, GRAUSXFLANC = 1, FREQ = 20,countPWM=0;
+static int TEMPSA1= 1, GRAUSXFLANC = 1, FREQ = 20, countPWM=0;
 
 
     void PWMInit(void){
@@ -40,9 +40,13 @@ static int TEMPSA1= 1, GRAUSXFLANC = 1, FREQ = 20,countPWM=0;
     }
     void PWMOn(){
        PWMON ;
+       estatPWM = 1;
+       TiResetTics(timerPWM);
     }
     void PWMOff(){
         PWMOFF;
+        estatPWM = 3;
+        
     }
 
     void MotorPWM (void) {
@@ -58,9 +62,10 @@ static int TEMPSA1= 1, GRAUSXFLANC = 1, FREQ = 20,countPWM=0;
                         estatPWM = 2;
                         
                     }
-                    if (countPWM >= 125){
+                    if (countPWM >= 276){
                         countPWM = 0;
-                        PWMOFF;
+                        
+                        PWMOff();
                         
                     }
                 break;
@@ -72,11 +77,13 @@ static int TEMPSA1= 1, GRAUSXFLANC = 1, FREQ = 20,countPWM=0;
                         
                         TiResetTics(timerPWM);
                         //incrementPWM();
-                        estatPWM = 1;
                         countPWM++;
+                        estatPWM = 1;
+                        
                     }
                     break;
                 
         }
     }
+    
 
