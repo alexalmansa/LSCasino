@@ -163,7 +163,8 @@ void initPropaganda(void) {
     estadistiques[2] = 0;
     estadistiques[3] = 0;
 
-
+    
+    
     // Inicializacio variable test
     //casellaGuany = 21;
     randomNumber();
@@ -172,18 +173,27 @@ void initPropaganda(void) {
 }
 
 void MotorPropaganda(void) {
-
+     
     if (TiGetTics(timerPropaganda) > 1000) {                                                                            // Contem un segon
         total++;                                                                                                        // Sumem al temps total de execucio
         if (++timestamp == 10000) timestamp = 0;
         TiResetTics(timerPropaganda);
+        
+        
+        
+        /*char* temperatura = (char*)GetTemperature();
+        SiPuts(temperatura);
+        SiSendChar('\n');
+        SiSendChar('\n\r');*/
+       
     }
 
     switch (state) {
         case 0:
             chars = 0;
-
+                
             if (opcio == 0 && !SiCharAvail() && printat == 0) {
+                
                 lcdmenu = 0;
                 Menu();
                 netejaProgress();
@@ -208,8 +218,9 @@ void MotorPropaganda(void) {
                 printat = 0;
             } else if (opcio == '3') {
                 lcdmenu = 4;
-                audioDurant();
+                
                 statsStringSIO();
+                
                 state = 5;
                 printat = 0;
             }
@@ -542,28 +553,28 @@ void setFitxes(char lcd) {
 }
 
 void setTemp(char lcd) {
-//    char temperatura [3] = (char*)GetTemperature();
-    //myItoa(temperatura);
+    char* temperatura = (char*)GetTemperature();
+    
     switch (lcd) {
         case 0:
-            menuLinia[30] = '2';
-            menuLinia[31] = '2';
+            menuLinia[30] = temperatura[1];
+            menuLinia[31] = temperatura[0];
             break;
         case 1:
-            esperaLinia[31] = '2';
-            esperaLinia[32] = '2';
+            esperaLinia[31] = temperatura[1];
+            esperaLinia[32] = temperatura[0];
             break;
         case 2:
-            jugantLinia[22] = '2';
-            jugantLinia[23] = '2';
+            jugantLinia[22] = temperatura[1];
+            jugantLinia[23] = temperatura[0];
             break;
         case 3:
-            afegintLinia[39] = '2';
-            afegintLinia[40] = '2';
+            afegintLinia[39] = temperatura[1];
+            afegintLinia[40] = temperatura[0];
             break;
         case 4:
-            statsLinia[29] = '2';
-            statsLinia[30] = '2';
+            statsLinia[29] = temperatura[1];
+            statsLinia[30] = temperatura[0];
             break;
     }
 
