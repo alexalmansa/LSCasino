@@ -3,7 +3,7 @@
 
 #include <xc.h>
 
-static unsigned char timerAudio,timerTemps, estat,periode[MAX_PERIODES]={2,3,4,5},frequencia;
+static unsigned char timerAudio,timerTemps, estat,periode[MAX_PERIODES]={4,6,8,10},frequencia;
 
 void AuInit(){
     SET_AUDIO_DIR();
@@ -91,7 +91,7 @@ void MotorControlAudio(){
     switch(estatt){
         case 0:
             vanalog=AdGetMostra(); 
-            tempsConvertit=1.5*vanalog+200;
+            tempsConvertit=(1.5*vanalog+200)*2;
             if (TiGetTics(timerTemps) >= tempsConvertit){
                 if(melodia==0){
                     seguentFrequencia();
@@ -106,7 +106,7 @@ void MotorControlAudio(){
                     seguentFrequencia();
                     seguentFrequencia();
                     seguentFrequencia();
-                    seguentFrequencia();
+                    
                 }
                 cantat++;
                 TiResetTics(timerTemps);
@@ -139,27 +139,32 @@ void audioDurant(){
         melodia=1;
         cantat=0;
         TiResetTics(timerTemps);
+        
         changeAudioStatus();
         frequencia=0;
     }
 }
 
 void audioFinalGuany(){
+    turnOffAudio();
+    
     estatt=0;
     melodia=2;
     cantat=0;
     TiResetTics(timerTemps);
     changeAudioStatus();
     frequencia=0;
+    
 }
 
 void audioFinalPerd(){
+    turnOffAudio();
     estatt=0;
     melodia=3;
     cantat=0;
     TiResetTics(timerTemps);
     changeAudioStatus();
-    frequencia=0;
+    frequencia=3;
 }
 
 int binaryToDecimal(int n) 
