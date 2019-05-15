@@ -6,6 +6,9 @@ static char estat,timerTeclat, charAvaliable;
 char asterisc, numero,hastag;
 
 void PbInit(void){
+    
+    //Convertim a digital
+    AD1PCFGbits.PCFG12 = 1;
     //Sortides pic escombrat(FILES)
   TRISBbits.TRISB6 = 0;
   TRISBbits.TRISB7 = 0;
@@ -21,31 +24,40 @@ void PbInit(void){
     F2=0;
     F1=0;
     F4=0;
-estat = 0;
+    
+ estat = 0;
  timerTeclat = TiGetTimer();
  charAvaliable = 0;
 }
 
 char CharAvaliablet(){
-    if (charAvaliable == 1){
-      charAvaliable = 0;  
-      return 1;  
-    }else{
-      return 0;    
-    }  
+    return charAvaliable;
 }
 
 char GetNumerot(){
+    if (charAvaliable == 1){
+      charAvaliable = 0;  
+    }
     return numero;
 }
 
-
 void MotorPulsador(){
+    
+  TRISBbits.TRISB6 = 0;
+  TRISBbits.TRISB7 = 0;
+  TRISBbits.TRISB8 = 0;
+  TRISBbits.TRISB9 = 0;
+
+//Entrades pic  (COLUMNES)
+  TRISBbits.TRISB10 = 1;
+  TRISBbits.TRISB11 = 1;
+  TRISBbits.TRISB12 = 1;
+    
     switch(estat){
         case 0:
 
             if(C1 == 0 && C2 == 0 && C3 == 0){
-              if (TiGetTics(timerTeclat) >= 2){
+              if (TiGetTics(timerTeclat) >= 40){
                 estat = 1;
                 TiResetTics(timerTeclat);
                 F2=0;
@@ -61,7 +73,7 @@ void MotorPulsador(){
         case 1:
 
             if(C1 == 0 && C2 ==0 && C3 == 0){
-              if (TiGetTics(timerTeclat) >= 2){
+              if (TiGetTics(timerTeclat) >= 40){
                 estat = 2;
                 TiResetTics(timerTeclat);
                 F1=0;
@@ -76,7 +88,7 @@ void MotorPulsador(){
             break;
         case 2:
           if(C1 == 0 && C2 == 0 && C3 == 0){
-            if (TiGetTics(timerTeclat) >= 2){
+            if (TiGetTics(timerTeclat) >= 40){
               estat = 3;
               TiResetTics(timerTeclat);
               F3 = 1;
@@ -93,7 +105,7 @@ void MotorPulsador(){
         case 3:
 
         if(C1 == 0 && C2 == 0 && C3 == 0){
-          if (TiGetTics(timerTeclat) >= 2){
+          if (TiGetTics(timerTeclat) >= 40){
             estat = 0;
             TiResetTics(timerTeclat);
             F4 = 1;
@@ -111,11 +123,11 @@ void MotorPulsador(){
 
 
         case 4:
-          if(C1 + C2 + C3 >= 1 && TiGetTics(timerTeclat) >= 2){
+          if(C1 + C2 + C3 >= 1 && TiGetTics(timerTeclat) >= 40){
             //Espero rebots....
                estat = 5;
             }
-            if (TiGetTics(timerTeclat) >= 2 && C1 + C2 + C3 == 0) {
+            if (TiGetTics(timerTeclat) >= 40 && C1 + C2 + C3 == 0) {
               estat = 1;
               TiResetTics(timerTeclat);
             }
@@ -142,20 +154,22 @@ void MotorPulsador(){
             }else if(F3 == 1 && C3 == 1){
                 numero = '9';
             }else if(F4 == 1 && C1 == 1){
-                numero = '#';
+                numero = '*';
             }else if(F4 == 1 && C2 == 1){
                 numero = '0';
             }else if(F4 == 1 && C3 == 1){
-                numero = '*';
+                numero = '#';
             }
             
             
-            
-            charAvaliable = 1;
-            if (TiGetTics(timerTeclat) >= 2) {
-              estat = 1;
-              TiResetTics(timerTeclat);
-            }            
+            if ( C1 + C2 + C3 == 0) {
+        
+                charAvaliable = 1;
+                if (TiGetTics(timerTeclat) >= 40) {
+                  estat = 0;
+                  TiResetTics(timerTeclat);
+                } 
+            }
             break;
 
     }
