@@ -11,8 +11,8 @@ static char estatPWM;
 static char timerPWM, temps;
 static char start = 0;
 
-static int TEMPSA1= 1, FREQ = 20, countPWM=0, flancs = 0;
-static double FLANCSXCASELLA = 7.46;
+static int TEMPSA1= 1, FREQ = 20, countPWM=0, flancs = 263;
+static double FLANCSXCASELLA = 1.46 , restants;
 static int posicions[36] = {0,14,31,2,33,18,27,6,21,10,19,23,4, 25,12,35,16,29,8 ,34,13,32,9 ,20,17,30,1 ,26,5 ,7 ,22,11,36,15,28,3 ,24};
 //                          0,1 ,2 ,3 ,4, 5, 6,7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36 
 
@@ -36,7 +36,8 @@ static int posicions[36] = {0,14,31,2,33,18,27,6,21,10,19,23,4, 25,12,35,16,29,8
     void novaTirada(int casella) {
       
       casella = posicions[casella] ;
-      flancs = casella * FLANCSXCASELLA;
+      flancs = casella * FLANCSXCASELLA + flancs;
+      restants = 52.6 - casella; 
       
     }
     void PWMOn(){
@@ -63,9 +64,9 @@ static int posicions[36] = {0,14,31,2,33,18,27,6,21,10,19,23,4, 25,12,35,16,29,8
                         estatPWM = 2;
                         
                     }
-                    if (countPWM >= 276/*flancs*/){
+                    if (countPWM >= /*263*/flancs){
                         countPWM = 0;
-                        
+                        flancs = 263 + restants;
                         PWMOff();
                         
                     }
