@@ -218,7 +218,7 @@ void MotorPropaganda(void) {
                 printat = 0;
             } else if (opcio == '3') {
                 lcdmenu = 4;
-                PWMOn();
+                vesA0();
                 statsStringSIO();
                 
                 state = 5;
