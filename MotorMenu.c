@@ -191,17 +191,24 @@ void MotorPropaganda(void) {
     switch (state) {
         case 0:
             chars = 0;
-                
-            if (opcio == 0 && !SiCharAvail() && printat == 0) {
+               
+            if (opcio == 0 && !SiCharAvail() && printat == 0 &&  !CharAvaliablet()) {
                 
                 lcdmenu = 0;
                 Menu();
                 netejaProgress();
                 printat = 1;
 
-            } else if (opcio == 0 && SiCharAvail()) {
-                opcio = SiGetChar();
-                SiSendChar(opcio);
+            } else if (opcio == 0  ) {
+                if(SiCharAvail()){
+                    SiGetChar();
+                    SiSendChar(opcio);
+                }else if(CharAvaliablet()){
+                    opcio = GetNumerot();
+                    SiSendChar(opcio);
+                }
+                
+
             } else if (opcio == '1') {
                 randomNumber();
                 timestamp = 0;
@@ -218,7 +225,7 @@ void MotorPropaganda(void) {
                 printat = 0;
             } else if (opcio == '3') {
                 lcdmenu = 4;
-                vesA0();
+                
                 statsStringSIO();
                 
                 state = 5;
@@ -227,9 +234,15 @@ void MotorPropaganda(void) {
             break;
 
         case 2:                                                                                                         // Nova Aposta
-            if (SiCharAvail() && timestamp < 16) {
-                op = SiGetChar();
-                state = 8;
+            if ( timestamp < 16) {
+                if(SiCharAvail()){
+                    op = SiGetChar();
+                    state = 8;
+                }else if(CharAvaliablet()){
+                    op = GetNumerot();
+                    state = 8;
+                }
+                
             } else if (timestamp >= 16) {                                                                               // Comença la ruleta
                 comencaRuleta();
                 
@@ -245,6 +258,17 @@ void MotorPropaganda(void) {
             break;
 
         case 3:                                                                                                         // Afegir/Retirar fitxes
+            if ( CharAvaliablet()) {
+                if (chars < 3) {
+                    valors[chars] = GetNumerot();//SiGetChar();
+                    SiSendChar(valors[chars]);
+                } else {
+                    op = GetNumerot();//SiGetChar();
+                    SiSendChar(op);
+                }
+                chars++;
+                state = 6;
+            }
             if (SiCharAvail()) {
                 if (chars < 3) {
                     valors[chars] = SiGetChar();
@@ -265,7 +289,12 @@ void MotorPropaganda(void) {
                 
                 SiPutsCooperatiu("\rTemps del sistema: ");
                 SiPutsCooperatiu(temp);
-            } else if (SiCharAvail()) {
+            } else if (CharAvaliablet()) {
+                state = 0;
+                opcio = 0;
+                GetNumerot();//SiGetChar();
+            }
+            else if (SiCharAvail()) {
                 state = 0;
                 opcio = 0;
                 SiGetChar();
@@ -311,12 +340,18 @@ void MotorPropaganda(void) {
             break;
 
         case 9:                                                                                                         // Nova Aposta
-            if (SiCharAvail()) {
-                valors[chars] = SiGetChar();
+            if (CharAvaliablet()) {
+                valors[chars] = GetNumerot();
                 SiSendChar(valors[chars]);
                 chars++;
                 state = 11;
-            } else if (timestamp >= 16) {
+            } else if (SiCharAvail()) {
+                valors[chars] =SiGetChar();
+                SiSendChar(valors[chars]);
+                chars++;
+                state = 11;
+            } 
+            else if (timestamp >= 16) {
                 comencaRuleta();
             }
             break;
@@ -406,7 +441,13 @@ void MotorPropaganda(void) {
             if (timestamp >=
                 16) {                                                                                                   // Comenca la ruleta
                 comencaRuleta();
-            } else if (SiCharAvail()) {
+            } else if (CharAvaliablet()) {
+                casella[chars] = GetNumerot();
+                SiSendChar(casella[chars]);
+                chars++;
+
+                state = 14;
+            }else if (SiCharAvail()) {
                 casella[chars] = SiGetChar();
                 SiSendChar(casella[chars]);
                 chars++;
