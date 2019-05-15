@@ -174,7 +174,7 @@ void initPropaganda(void) {
 
 void MotorPropaganda(void) {
      
-    if (TiGetTics(timerPropaganda) > 1000) {                                                                            // Contem un segon
+    if (TiGetTics(timerPropaganda) > 2000) {                                                                            // Contem un segon
         total++;                                                                                                        // Sumem al temps total de execucio
         if (++timestamp == 10000) timestamp = 0;
         TiResetTics(timerPropaganda);
@@ -218,7 +218,7 @@ void MotorPropaganda(void) {
                 printat = 0;
             } else if (opcio == '3') {
                 lcdmenu = 4;
-                
+                PWMOn();
                 statsStringSIO();
                 
                 state = 5;
@@ -231,13 +231,8 @@ void MotorPropaganda(void) {
                 op = SiGetChar();
                 state = 8;
             } else if (timestamp >= 16) {                                                                               // Comença la ruleta
-                //accionaRuleta(RANDOM());
-                addProgress();
-                jugantSIO();
-                lcdmenu = 2;
-                timestamp = 0;
-                audioInicial();
-                state = 10;
+                comencaRuleta();
+                
             } else if (timestamp2 != timestamp) {
                 timestamp2 = timestamp;
                 myItoa(timestamp);
@@ -322,12 +317,7 @@ void MotorPropaganda(void) {
                 chars++;
                 state = 11;
             } else if (timestamp >= 16) {
-                //accionaRuleta(RANDOM());
-                jugantSIO();
-                lcdmenu = 2;
-                //audioInici();
-                timestamp = 0;
-                state = 10;
+                comencaRuleta();
             }
             break;
 
@@ -415,12 +405,7 @@ void MotorPropaganda(void) {
         case 12:                                                                                                        // Nova Aposta
             if (timestamp >=
                 16) {                                                                                                   // Comenca la ruleta
-                //accionaRuleta(RANDOM());
-                jugantSIO();
-                lcdmenu = 2;
-                audioInicial();
-                timestamp = 0;
-                state = 10;
+                comencaRuleta();
             } else if (SiCharAvail()) {
                 casella[chars] = SiGetChar();
                 SiSendChar(casella[chars]);
@@ -471,12 +456,7 @@ void MotorPropaganda(void) {
 
         case 16:                                                                                                        // Comenca Ruleta
             if (timestamp >= 16) {
-                //accionaRuleta(RANDOM());
-                jugantSIO();
-                lcdmenu = 2;
-                audioInicial();
-                state = 10;
-                timestamp = 0;
+                comencaRuleta();
             } else if (timestamp2 != timestamp) {
                 timestamp2 = timestamp;
                 myItoa(timestamp);
@@ -557,24 +537,24 @@ void setTemp(char lcd) {
     
     switch (lcd) {
         case 0:
-            menuLinia[30] = temperatura[1];
-            menuLinia[31] = temperatura[0];
+            menuLinia[30] = temperatura[2];
+            menuLinia[31] = temperatura[3];
             break;
         case 1:
-            esperaLinia[31] = temperatura[1];
-            esperaLinia[32] = temperatura[0];
+            esperaLinia[31] = temperatura[2];
+            esperaLinia[32] = temperatura[3];
             break;
         case 2:
-            jugantLinia[22] = temperatura[1];
-            jugantLinia[23] = temperatura[0];
+            jugantLinia[22] = temperatura[2];
+            jugantLinia[23] = temperatura[3];
             break;
         case 3:
-            afegintLinia[39] = temperatura[1];
-            afegintLinia[40] = temperatura[0];
+            afegintLinia[39] = temperatura[2];
+            afegintLinia[40] = temperatura[3];
             break;
         case 4:
-            statsLinia[29] = temperatura[1];
-            statsLinia[30] = temperatura[0];
+            statsLinia[29] = temperatura[2];
+            statsLinia[30] = temperatura[3];
             break;
     }
 
@@ -585,6 +565,16 @@ void cstringcpy(char *src, char *dest) {
         *(dest++) = *(src++);
     }
     *dest = '\0';
+}
+
+void comencaRuleta(){
+    novaTirada(casellaGuany);
+    //accionaRuleta(RANDOM());
+    jugantSIO();
+    lcdmenu = 2;
+    audioInicial();
+    timestamp = 0;
+    state = 10;
 }
 
 void initMotorLCD(void) {
@@ -647,7 +637,7 @@ void MotorLCD(void) {
             break;
 
         case 3:
-            if (TiGetTics(timerLCD) > 50) {
+            if (TiGetTics(timerLCD) > 200) {
                 TiResetTics(timerLCD);
                 i = 0;
                 estatLCD = 4;
@@ -655,7 +645,7 @@ void MotorLCD(void) {
             break;
 
         case 4:
-            if (TiGetTics(timerLCD) >= 350) {
+            if (TiGetTics(timerLCD) >= 1400) {
                 //Alerta, ja porto 50 ms. des de l'?ltim refresc
                 caracterInici++;
                 if (caracterInici == getLenght[lcdmenu])
