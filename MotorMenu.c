@@ -201,7 +201,7 @@ void MotorPropaganda(void) {
 
             } else if (opcio == 0  ) {
                 if(SiCharAvail()){
-                    SiGetChar();
+                    opcio= SiGetChar();
                     SiSendChar(opcio);
                 }else if(CharAvaliablet()){
                     opcio = GetNumerot();
@@ -268,8 +268,7 @@ void MotorPropaganda(void) {
                 }
                 chars++;
                 state = 6;
-            }
-            if (SiCharAvail()) {
+            }else if (SiCharAvail()) {
                 if (chars < 3) {
                     valors[chars] = SiGetChar();
                     SiSendChar(valors[chars]);
