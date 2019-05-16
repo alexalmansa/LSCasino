@@ -212,24 +212,32 @@ void MotorPropaganda(void) {
             } else if (opcio == '1') {
                 randomNumber();
                 timestamp = 0;
+                
                 lcdmenu = 1;
+                netejaProgress();
                 apostaStringSIO();
                 state = 2;
                 printat = 0;
                 
 
             } else if (opcio == '2') {
+                
                 lcdmenu = 3;
+                netejaProgress();
                 fitxesStringSIO();
                 state = 3;
                 printat = 0;
             } else if (opcio == '3') {
+                
                 lcdmenu = 4;
+                netejaProgress();
                 
                 statsStringSIO();
                 
                 state = 5;
                 printat = 0;
+            } else{
+                lcdmenu = 0;
             }
             break;
 
@@ -611,6 +619,7 @@ void comencaRuleta(){
     novaTirada(casellaGuany);
     //accionaRuleta(RANDOM());
     jugantSIO();
+    netejaProgress();
     lcdmenu = 2;
     audioInicial();
     timestamp = 0;
@@ -629,26 +638,31 @@ void PosaChar(char lcd) {
     switch (lcd) {
         case 0:                            //Menu
             LcPutChar(menuLinia[j++]);
+            //netejaProgress();
             if (j == 36) j = 0;
             break;
 
         case 1:                            //Esperant
-            LcPutChar(esperaLinia[j++]);
+            LcPutChar(esperaLinia[j++]);            
             if (j == 37) j = 0;
             break;
 
         case 2:                            //Jugant
             LcPutChar(jugantLinia[j++]);
+            //netejaProgress();
             if (j == 28) j = 0;
             break;
 
         case 3:                            //Afegint retirant
             LcPutChar(afegintLinia[j++]);
+            //netejaProgress();
+            
             if (j == 45) j = 0;
             break;
 
         case 4:                            //Stats
             LcPutChar(statsLinia[j++]);
+            //netejaProgress();
             if (j == 35) j = 0;
             break;
     }
