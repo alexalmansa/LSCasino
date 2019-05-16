@@ -234,7 +234,7 @@ void MotorPropaganda(void) {
             break;
 
         case 2:                                                                                                         // Nova Aposta
-            if ( timestamp < 16) {
+            if ( timestamp < 16 && (SiCharAvail() || CharAvaliablet())) {
                 if(SiCharAvail()){
                     op = SiGetChar();
                     state = 8;
@@ -248,7 +248,7 @@ void MotorPropaganda(void) {
                 
             } else if (timestamp2 != timestamp) {
                 timestamp2 = timestamp;
-                myItoa(timestamp);
+                myItoa(16-timestamp);
                 SiSendChar('\r');
                 SiPutsCooperatiu("[Temps restant ");
                 SiPutsCooperatiu(temp);
@@ -499,7 +499,7 @@ void MotorPropaganda(void) {
                 comencaRuleta();
             } else if (timestamp2 != timestamp) {
                 timestamp2 = timestamp;
-                myItoa(timestamp);
+                myItoa(16-timestamp);
                 SiSendChar('\r');
                 SiPutsCooperatiu("[Temps restant ");
                 SiPutsCooperatiu(temp);
