@@ -8,6 +8,7 @@ static char valors[3] = {'0', '0', '0'};
 static char estadistiques0[3], estadistiques1[3], estadistiques2[3], estadistiques3[3];
 static int estadistiques[4];
 static int fitxes;
+static int reds[18]={1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36};
 static int convertitCas, convertitVal, casellaGuany, timestamp, timestamp2, total, fitxesguanyades;
 
 
@@ -214,7 +215,7 @@ void MotorPropaganda(void) {
                 timestamp = 0;
                 guanyem = 2;
                 lcdmenu = 1;
-                netejaProgress();
+                //netejaProgress();
                 apostaStringSIO();
                 state = 2;
                 printat = 0;
@@ -223,14 +224,14 @@ void MotorPropaganda(void) {
             } else if (opcio == '2') {
                 
                 lcdmenu = 3;
-                netejaProgress();
+                //netejaProgress();
                 fitxesStringSIO();
                 state = 3;
                 printat = 0;
             } else if (opcio == '3') {
                 
                 lcdmenu = 4;
-                netejaProgress();
+                //netejaProgress();
                 
                 statsStringSIO();
                 //SiGetChar();
@@ -374,7 +375,7 @@ void MotorPropaganda(void) {
                 SiPuts(temp);
                 SiPuts(", guanyen les ");
 
-                int resultat = casellaGuany % 2;
+                int resultat = valueinarray(casellaGuany, reds);
 
                 if (resultat == 0) {
                     SiPuts("Negres\r\n\0");
@@ -527,6 +528,36 @@ void MotorPropaganda(void) {
     }
 }
 
+int valueinarray(int val, int arr[])
+{
+    int i;
+    for(i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+    {
+        if(arr[i] == val)
+            return 1;
+    }
+    return 0;
+}
+
+void cstringcpy(char *src, char *dest) {
+    while (*src) {
+        *(dest++) = *(src++);
+    }
+    *dest = '\0';
+}
+
+void comencaRuleta(){
+    novaTirada(casellaGuany);
+    //accionaRuleta(RANDOM());
+    jugantSIO();
+    netejaProgress();
+    lcdmenu = 2;
+    audioInicial();
+    timestamp = 0;
+    state = 10;
+}
+
+
 #define     MAXCOLUMNES 16
 static char estatLCD = 0;
 static int getLenght[] = {36, 37, 28, 45, 35};
@@ -540,7 +571,7 @@ static unsigned char statsLinia[35] = {"Estadistiques - YYY fitxes - XX C  "};
 void netejaProgress(void) {
     LcGotoXY(0, 1);
     LcPutString("                ");
-    LcGotoXY(0, 1);
+    LcGotoXY(i, 0);
     conta = 0;
 }
 
@@ -548,6 +579,7 @@ void addProgress(void) {
     LcGotoXY(conta, 1);
     LcPutChar('X');                                                                    // Caracter de casella plena
     conta++;
+    LcGotoXY(i, 0);
 }
 
 
@@ -613,23 +645,7 @@ void setTemp(char lcd) {
 
 }
 
-void cstringcpy(char *src, char *dest) {
-    while (*src) {
-        *(dest++) = *(src++);
-    }
-    *dest = '\0';
-}
 
-void comencaRuleta(){
-    novaTirada(casellaGuany);
-    //accionaRuleta(RANDOM());
-    jugantSIO();
-    netejaProgress();
-    lcdmenu = 2;
-    audioInicial();
-    timestamp = 0;
-    state = 10;
-}
 
 void initMotorLCD(void) {
     //Pre: El LCD esta inicialitzat
