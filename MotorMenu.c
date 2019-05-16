@@ -35,7 +35,7 @@ void myAtoi(char *str, char val) {
 }
 
 void randomNumber(void){
-    casellaGuany = rand() % 37;
+    casellaGuany = (rand()+ total) % 37;
 }
 
 void Menu(void) {
@@ -191,7 +191,7 @@ void MotorPropaganda(void) {
     switch (state) {
         case 0:
             chars = 0;
-               
+            
             if (opcio == 0 && !SiCharAvail() && printat == 0 &&  !CharAvaliablet()) {
                 
                 lcdmenu = 0;
@@ -212,7 +212,7 @@ void MotorPropaganda(void) {
             } else if (opcio == '1') {
                 randomNumber();
                 timestamp = 0;
-                
+                guanyem = 2;
                 lcdmenu = 1;
                 netejaProgress();
                 apostaStringSIO();
@@ -300,8 +300,7 @@ void MotorPropaganda(void) {
                 state = 0;
                 opcio = 0;
                 GetNumerot();//SiGetChar();
-            }
-            else if (SiCharAvail()) {
+            }else if (SiCharAvail()) {
                 state = 0;
                 opcio = 0;
                 SiGetChar();
@@ -353,7 +352,7 @@ void MotorPropaganda(void) {
                 chars++;
                 state = 11;
             } else if (SiCharAvail()) {
-                valors[chars] =SiGetChar();
+                valors[chars] = SiGetChar();
                 SiSendChar(valors[chars]);
                 chars++;
                 state = 11;
@@ -382,7 +381,7 @@ void MotorPropaganda(void) {
                     SiPuts("Vermelles\r\n\0");
                 }
 
-                guanyem = 0;
+                
                 if (casellaGuany == convertitCas) {
                     audioFinalGuany();
                     fitxesguanyades = convertitVal * 37;
@@ -392,6 +391,7 @@ void MotorPropaganda(void) {
                     fitxesguanyades = convertitVal * 2;
                     guanyem = 1;
                 }else{
+                    
                     audioFinalPerd();
                 }
                       
@@ -418,14 +418,15 @@ void MotorPropaganda(void) {
                 SiPutsCooperatiu("\r\nFelicitats! Has guanyat ");
                 SiPutsCooperatiu(temp);
                 SiPutsCooperatiu(" fitxes!\r\n\0");
-            } else {
+                estadistiques[1]++;
+            } else if (guanyem == 0){
                 SiPutsCooperatiu("\r\nHo sentim, has perdut ");
                 SiPutsCooperatiu(temp);
                 SiPutsCooperatiu(" fitxes!\r\n\0");
                 estadistiques[3] += convertitVal;                                                                       // Sumem a stats les fitxes perdudes
-
+                estadistiques[1]++;
             }
-            estadistiques[1]++;
+            
 
 
             state = 0;
@@ -434,9 +435,10 @@ void MotorPropaganda(void) {
 
         case 11:                                                                                                        // Nova Aposta
             if (chars < 3) {
-                myAtoi(valors, '1');
+                
                 state = 9;
             } else if (chars == 3) {
+                myAtoi(valors, '1');
                 SiPutsCooperatiu("\r\nIntrodueix la cela [0-36 = Individual | 100 - Red | 200 - Black]:\r\n\0");
                 chars = 0;
                 state = 12;
@@ -473,6 +475,7 @@ void MotorPropaganda(void) {
                 myAtoi(casella, '0');
                 char error = errorAposta();
                 if (error == 1) {
+                    guanyem = 0;
                     SiPuts("\r\nHas apostat ");
                     SiPuts(valors);
 
