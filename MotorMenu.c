@@ -192,7 +192,7 @@ void MotorPropaganda(void) {
     switch (state) {
         case 0:
             chars = 0;
-            
+            lcdmenu=0;
             if (opcio == 0 && !SiCharAvail() && printat == 0 &&  !CharAvaliablet()) {
                 
                 lcdmenu = 0;
@@ -244,6 +244,7 @@ void MotorPropaganda(void) {
             break;
 
         case 2:                                                                                                         // Nova Aposta
+            lcdmenu = 1;
             if ( timestamp < 16 && (SiCharAvail() || CharAvaliablet())) {
                 if(SiCharAvail()){
                     op = SiGetChar();
@@ -268,6 +269,7 @@ void MotorPropaganda(void) {
             break;
 
         case 3:                                                                                                         // Afegir/Retirar fitxes
+            lcdmenu = 3;
             if ( CharAvaliablet()) {
                 if (chars < 3) {
                     valors[chars] = GetNumerot();//SiGetChar();
@@ -292,6 +294,7 @@ void MotorPropaganda(void) {
             break;
 
         case 5:                                                                                                         // Estadistiques
+            lcdmenu = 4;
             if (timestamp2 != total) {
                 timestamp2 = total;
                 myItoa(total);
@@ -652,7 +655,7 @@ void initMotorLCD(void) {
     timerLCD = TiGetTimer();
     caracterInici = 0;
     LcClear();
-
+    
 }
 
 void PosaChar(char lcd) {
@@ -696,6 +699,7 @@ void PosaChar(char lcd) {
 }
 
 void MotorLCD(void) {
+    
     switch (estatLCD) {
         case 0:                            //Menu
             PosaChar(lcdmenu);
@@ -732,4 +736,5 @@ void MotorLCD(void) {
             }
             break;
     }
+    
 }
