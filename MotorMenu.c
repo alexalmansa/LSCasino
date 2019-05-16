@@ -3,7 +3,7 @@
 
 static char state, opcio, printat, chars, guanyem, timerPropaganda, lcdmenu, conta = 0;
 static char temp[5], op, fitxestemp[3], celatemp[3];
-static char casella[3];
+static char casella[3],printafit[5];
 static char valors[3] = {'0', '0', '0'};
 static char estadistiques0[3], estadistiques1[3], estadistiques2[3], estadistiques3[3];
 static int estadistiques[4];
@@ -406,7 +406,8 @@ void MotorPropaganda(void) {
 
         case 7:
             myItoa(convertitVal);
-
+            cstringcpy(temp, printafit);
+           
             if (guanyem == 1) {
 
                 estadistiques[0]++;
@@ -416,12 +417,12 @@ void MotorPropaganda(void) {
 
                 if (fitxes > 999) fitxes = 999;
                 SiPutsCooperatiu("\r\nFelicitats! Has guanyat ");
-                SiPutsCooperatiu(temp);
+                SiPutsCooperatiu(printafit);
                 SiPutsCooperatiu(" fitxes!\r\n\0");
                 estadistiques[1]++;
             } else if (guanyem == 0){
                 SiPutsCooperatiu("\r\nHo sentim, has perdut ");
-                SiPutsCooperatiu(temp);
+                SiPutsCooperatiu(printafit);
                 SiPutsCooperatiu(" fitxes!\r\n\0");
                 estadistiques[3] += convertitVal;                                                                       // Sumem a stats les fitxes perdudes
                 estadistiques[1]++;
