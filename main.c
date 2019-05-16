@@ -71,8 +71,8 @@ int main(void){
     AdInit();
     SiInit();
     ThermometerInit();
-    //PWMInit();
-    //PbInit();
+    PWMInit();
+    PbInit();
     
     LcClear();
     LcCursorOff();
@@ -84,9 +84,10 @@ int main(void){
         MotorLCD();
         MotorPropaganda();
         MotorSIO();
-        //MotorPWM();
-        //MotorPulsador();
+        MotorPWM();
+        MotorPulsador();
         MotorThermometer();
+        //MotorPropaganda();
         MotorAudio();
         MotorControlAudio();
     }
