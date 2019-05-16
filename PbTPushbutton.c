@@ -1,4 +1,4 @@
- #include "PbTPushbutton.h"
+#include "PbTPushbutton.h"
 
 
 
@@ -48,10 +48,6 @@ void MotorPulsador(){
   TRISBbits.TRISB8 = 0;
   TRISBbits.TRISB9 = 0;
 
-//Entrades pic  (COLUMNES)
-  TRISBbits.TRISB10 = 1;
-  TRISBbits.TRISB11 = 1;
-  TRISBbits.TRISB12 = 1;
     
     switch(estat){
         case 0:
