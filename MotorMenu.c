@@ -233,7 +233,8 @@ void MotorPropaganda(void) {
                 netejaProgress();
                 
                 statsStringSIO();
-                
+                //SiGetChar();
+                //GetNumerot();
                 state = 5;
                 printat = 0;
             } else{
@@ -299,7 +300,7 @@ void MotorPropaganda(void) {
             } else if (CharAvaliablet()) {
                 state = 0;
                 opcio = 0;
-                GetNumerot();//SiGetChar();
+                GetNumerot();
             }else if (SiCharAvail()) {
                 state = 0;
                 opcio = 0;
